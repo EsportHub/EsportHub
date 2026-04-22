@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "esport_user",
+    "password": "secret_pass_123",
+    "database": "EsportDB",
+    "host": "db",
+    "dialect": "mysql"
+  }
+}

@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "start": "node ./server/server.js"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.4.0",
     "prettier": "^3.8.1"
+  },
+  "dependencies": {
+    "wait-port": "^1.1.0"
   }
 }
