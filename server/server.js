@@ -3,29 +3,28 @@ const morgan = require('morgan');
 const logger = require('./src/utils/logger');
 const errorHandler = require('./src/presentation/middlewares/errorHandler');
 
-// 1. Імпортуємо наші файли маршрутизації
 const healthRoutes = require('./src/presentation/routes/health.routes');
 const coreRoutes = require('./src/presentation/routes/core.routes');
+const authRoutes = require('./src/presentation/routes/auth.routes');
+const userRoutes = require('./src/presentation/routes/user.routes');
 
 const app = express();
 
-// Дозволяємо серверу читати JSON з тіла запиту
+// 1. Базові middleware
 app.use(express.json());
-
-// 2. Налаштування логування вхідних запитів (Morgan + Winston)
 app.use(
   morgan(':method :url :status :response-time ms', {
     stream: { write: (message) => logger.info(message.trim()) },
   }),
 );
 
-// 3. Підключаємо маршрутизатори (Routing)
-// Всі запити на /health підуть у healthRoutes
+// 2. Роути
 app.use('/health', healthRoutes);
-// Всі запити на /api підуть у coreRoutes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api', coreRoutes);
 
-// Тестовий ендпоінт для перевірки обробника помилок (можеш видалити пізніше)
+// Тестовий ендпоінт
 app.get('/api/test-error', (req, res, next) => {
   const error = new Error('Тестова критична помилка!');
   error.statusCode = 400;
@@ -33,11 +32,17 @@ app.get('/api/test-error', (req, res, next) => {
   next(error);
 });
 
-// 4. ПІДКЛЮЧАЄМО GLOBAL EXCEPTION HANDLER
-// Важливо: обробник помилок ЗАВЖДИ має бути останнім app.use() у файлі!
+// 3. Ігноруємо favicon щоб не спамив помилками
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+// 4. 404 handler
+app.use((req, res) => {
+  res.status(404).json({ errorCode: 'NOT_FOUND', message: 'Маршрут не знайдено' });
+});
+
+// 5. Error handler — завжди останній!
 app.use(errorHandler);
 
-// 5. Запуск сервера
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   logger.info(`Сервер запущено на порту ${PORT}`);

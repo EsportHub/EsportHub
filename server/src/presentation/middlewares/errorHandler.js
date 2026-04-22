@@ -1,6 +1,6 @@
 const logger = require('../../utils/logger');
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   // Визначаємо статус-код та код помилки
   const statusCode = err.statusCode || 500;
   const errorCode = err.errorCode || (statusCode === 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST');
