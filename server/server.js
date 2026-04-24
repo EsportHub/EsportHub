@@ -1,7 +1,11 @@
+'use strict';
+
 const express = require('express');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
 const logger = require('./src/utils/logger');
 const errorHandler = require('./src/presentation/middlewares/errorHandler');
+const swaggerSpec = require('./src/utils/swaggerConfig');
 
 const healthRoutes = require('./src/presentation/routes/health.routes');
 const coreRoutes = require('./src/presentation/routes/core.routes');
@@ -18,13 +22,16 @@ app.use(
   }),
 );
 
-// 2. Роути
+// 2. Swagger UI
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 3. Роути
 app.use('/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', coreRoutes);
 
-// Тестовий ендпоінт
+// 4. Тестовий ендпоінт
 app.get('/api/test-error', (req, res, next) => {
   const error = new Error('Тестова критична помилка!');
   error.statusCode = 400;
@@ -32,18 +39,19 @@ app.get('/api/test-error', (req, res, next) => {
   next(error);
 });
 
-// 3. Ігноруємо favicon щоб не спамив помилками
+// 5. Favicon
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-// 4. 404 handler
+// 6. 404 handler
 app.use((req, res) => {
   res.status(404).json({ errorCode: 'NOT_FOUND', message: 'Маршрут не знайдено' });
 });
 
-// 5. Error handler — завжди останній!
+// 7. Error handler — завжди останній!
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   logger.info(`Сервер запущено на порту ${PORT}`);
+  logger.info(`Swagger UI доступний на http://localhost:${PORT}/api/docs`);
 });

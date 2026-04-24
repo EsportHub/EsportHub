@@ -1,5 +1,7 @@
 'use strict';
 
+const bcrypt = require('bcryptjs');
+
 console.log('Inserting data...');
 
 module.exports = {
@@ -24,17 +26,18 @@ module.exports = {
 
     const [users] = await queryInterface.sequelize.query('SELECT COUNT(*) as count FROM users');
     if (users[0].count === '0') {
+      const passwordHash = await bcrypt.hash('123456', 10);
       await queryInterface.bulkInsert('users', [
         {
           username: 'admin',
           email: 'admin@test.com',
-          password_hash: '123456',
+          password_hash: passwordHash,
           theme_preference: 'dark',
         },
         {
           username: 'user1',
           email: 'user1@test.com',
-          password_hash: '123456',
+          password_hash: passwordHash,
           theme_preference: 'light',
         },
       ]);
