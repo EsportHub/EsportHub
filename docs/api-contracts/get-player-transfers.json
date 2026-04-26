@@ -1,0 +1,26 @@
+{
+  "endpoint": "GET /api/v1/players/{playerId}/transfers",
+  "request": {
+    "playerId": "number"
+  },
+  "response": {
+    "playerId": 101,
+    "nickname": "s1mple",
+    "transfers": [
+      {
+        "transferId": 1,
+        "oldTeam": "HellRaisers",
+        "newTeam": "NAVI",
+        "transferDate": "2016-08-04T00:00:00Z",
+        "notes": "Main roster transfer"
+      },
+      {
+        "transferId": 2,
+        "oldTeam": "NAVI",
+        "newTeam": "Falcons",
+        "transferDate": "2025-01-15T00:00:00Z",
+        "notes": "International transfer"
+      }
+    ]
+  }
+}

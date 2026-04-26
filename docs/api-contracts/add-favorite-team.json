@@ -1,0 +1,14 @@
+{
+  "endpoint": "POST /api/v1/favorite-teams",
+  "request": {
+    "userId": 5,
+    "teamId": 12
+  },
+  "response": {
+    "favoriteId": 27,
+    "userId": 5,
+    "teamId": 12,
+    "teamName": "NAVI",
+    "createdAt": "2026-04-08T13:00:00Z"
+  }
+}

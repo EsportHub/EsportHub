@@ -1,0 +1,30 @@
+{
+  "endpoint": "GET /api/v1/countries/{countryId}/teams",
+  "request": {
+    "countryId": "number"
+  },
+  "response": {
+    "country": {
+      "countryId": 1,
+      "name": "Ukraine",
+      "code": "UA",
+      "flag": "https://example.com/flags/ua.png"
+    },
+    "teams": [
+      {
+        "teamId": 12,
+        "name": "NAVI",
+        "logo": "https://example.com/logos/navi.png",
+        "city": "Kyiv",
+        "foundedDate": "2009-12-17"
+      },
+      {
+        "teamId": 18,
+        "name": "Monte",
+        "logo": "https://example.com/logos/monte.png",
+        "city": "Kyiv",
+        "foundedDate": "2022-01-01"
+      }
+    ]
+  }
+}
