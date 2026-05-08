@@ -39,6 +39,28 @@ class TournamentRepository {
     );
     return tournaments[0] || null;
   }
+
+  async findForMap() {
+    const [tournaments] = await db.sequelize.query(`
+    SELECT
+      t.tournament_id,
+      t.name,
+      t.start_date,
+      t.end_date,
+      t.prize_pool,
+      g.name AS game,
+      a.name AS arena,
+      a.latitude,
+      a.longitude,
+      ci.name AS city
+    FROM tournament t
+    LEFT JOIN game g ON t.game_id = g.game_id
+    LEFT JOIN arena a ON t.arena_id = a.arena_id
+    LEFT JOIN city ci ON a.city_id = ci.city_id
+    ORDER BY t.start_date DESC
+  `);
+    return tournaments;
+  }
 }
 
 module.exports = new TournamentRepository();

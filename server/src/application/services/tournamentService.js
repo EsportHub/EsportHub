@@ -18,6 +18,10 @@ class TournamentService {
     }
     return tournament;
   }
+
+  async getTournamentsForMap() {
+    return tournamentRepository.findForMap();
+  }
 }
 
 module.exports = new TournamentService();

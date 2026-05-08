@@ -177,6 +177,32 @@ const options = {
             },
           },
         },
+        TournamentMapItem: {
+          type: 'object',
+          properties: {
+            tournament_id: { type: 'integer', example: 1 },
+            name: { type: 'string', example: 'PGL Major Copenhagen 2024' },
+            start_date: { type: 'string', format: 'date', example: '2024-03-17' },
+            end_date: { type: 'string', format: 'date', example: '2024-03-31' },
+            prize_pool: { type: 'number', example: 1250000 },
+            game: { type: 'string', example: 'CS2' },
+            arena: { type: 'string', example: 'PGL Arena' },
+            latitude: { type: 'number', example: 55.6761 },
+            longitude: { type: 'number', example: 12.5683 },
+            city: { type: 'string', example: 'Copenhagen' },
+          },
+        },
+        TournamentMapResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Турніри для мапи успішно отримано' },
+            count: { type: 'integer', example: 2 },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/TournamentMapItem' },
+            },
+          },
+        },
       },
     },
     paths: {
@@ -368,6 +394,22 @@ const options = {
           summary: 'Отримати список всіх турнірів',
           responses: {
             200: { description: 'Список турнірів' },
+          },
+        },
+      },
+      '/api/tournaments/map': {
+        get: {
+          tags: ['Tournaments'],
+          summary: 'Отримати турніри з координатами для мапи',
+          responses: {
+            200: {
+              description: 'Турніри для мапи успішно отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/TournamentMapResponse' },
+                },
+              },
+            },
           },
         },
       },

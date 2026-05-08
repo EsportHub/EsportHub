@@ -94,3 +94,17 @@ exports.getTeamsByCountry = async (req, res, next) => {
     next(error);
   }
 };
+
+// GET /api/tournaments/map
+exports.getTournamentsForMap = async (req, res, next) => {
+  try {
+    const tournaments = await tournamentService.getTournamentsForMap();
+    res.status(200).json({
+      message: 'Турніри для мапи успішно отримано',
+      count: tournaments.length,
+      data: tournaments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -8,6 +8,7 @@ router.get('/teams', coreController.getTeams);
 router.get('/teams/:id', coreController.getTeamById);
 
 router.get('/tournaments', coreController.getTournaments);
+router.get('/tournaments/map', coreController.getTournamentsForMap);
 router.get('/tournaments/:id', coreController.getTournamentById);
 
 router.get('/countries', coreController.getCountries);
