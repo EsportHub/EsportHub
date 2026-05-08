@@ -28,10 +28,14 @@ class UserRepository {
     return users[0] || null;
   }
 
-  async create({ username, email, passwordHash }) {
+  async create({ username, email, passwordHash }, transaction) {
     const [result] = await db.sequelize.query(
       `INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :passwordHash)`,
-      { replacements: { username, email, passwordHash }, type: QueryTypes.INSERT },
+      {
+        replacements: { username, email, passwordHash },
+        type: QueryTypes.INSERT,
+        transaction, // передаємо транзакцію
+      },
     );
     return result; // insertId
   }

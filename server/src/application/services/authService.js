@@ -3,6 +3,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../../infrastructure/repositories/userRepository');
+const db = require('../../../models/index');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_in_prod';
 const JWT_EXPIRES_IN = '7d';
@@ -30,8 +31,10 @@ class AuthService {
     // Хешування пароля
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Створення користувача
-    const userId = await userRepository.create({ username, email, passwordHash });
+    // Транзакція — якщо щось піде не так, користувач не збережеться
+    const userId = await db.sequelize.transaction(async (t) => {
+      return await userRepository.create({ username, email, passwordHash }, t);
+    });
 
     // Генерація JWT токена
     const token = jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });

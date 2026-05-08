@@ -16,7 +16,6 @@ exports.register = async (req, res, next) => {
     next(error);
   }
 };
-// comment to test commit
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
