@@ -308,7 +308,7 @@ const options = {
           },
         },
       },
-      '/api/team/{id}': {
+      '/api/teams/{id}': {
         get: {
           tags: ['Teams'],
           summary: 'Отримати команду за ID',
@@ -423,7 +423,7 @@ const options = {
           },
         },
       },
-      '/api/users/{userId}/favorites/team': {
+      '/api/users/{userId}/favorites/teams': {
         get: {
           tags: ['Favorites'],
           summary: 'Отримати список обраних команд користувача',
