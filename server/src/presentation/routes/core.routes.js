@@ -10,4 +10,8 @@ router.get('/teams/:id', coreController.getTeamById);
 router.get('/tournaments', coreController.getTournaments);
 router.get('/tournaments/:id', coreController.getTournamentById);
 
+router.get('/countries', coreController.getCountries);
+router.get('/countries/:id', coreController.getCountryById);
+router.get('/countries/:id/teams', coreController.getTeamsByCountry);
+
 module.exports = router;

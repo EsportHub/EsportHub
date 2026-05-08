@@ -134,6 +134,49 @@ const options = {
             message: { type: 'string', example: 'Опис помилки' },
           },
         },
+        Country: {
+          type: 'object',
+          properties: {
+            country_id: { type: 'integer', example: 1 },
+            name: { type: 'string', example: 'Ukraine' },
+            code: { type: 'string', example: 'UA' },
+            flag: { type: 'string', example: 'uk' },
+            description: { type: 'string', example: 'Eastern Europe country' },
+          },
+        },
+        CountriesListResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Список країн успішно отримано' },
+            count: { type: 'integer', example: 4 },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/Country' },
+            },
+          },
+        },
+        CountryTeamItem: {
+          type: 'object',
+          properties: {
+            team_id: { type: 'integer', example: 1 },
+            name: { type: 'string', example: 'Natus Vincere' },
+            founded_date: { type: 'string', format: 'date', example: '2009-12-17' },
+            logo: { type: 'string', example: 'https://cdn.example.com/navi.png' },
+            description: { type: 'string', example: 'Ukrainian esports organization' },
+            city: { type: 'string', example: 'Kyiv' },
+          },
+        },
+        CountryTeamsResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Команди країни успішно отримано' },
+            count: { type: 'integer', example: 2 },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/CountryTeamItem' },
+            },
+          },
+        },
       },
     },
     paths: {
@@ -447,6 +490,89 @@ const options = {
             },
             401: {
               description: 'Токен відсутній або недійсний',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/countries': {
+        get: {
+          tags: ['Countries'],
+          summary: 'Отримати список всіх країн',
+          responses: {
+            200: {
+              description: 'Список країн успішно отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/CountriesListResponse' },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/countries/{id}': {
+        get: {
+          tags: ['Countries'],
+          summary: 'Отримати країну за ID',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID країни',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Країну знайдено',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      data: { $ref: '#/components/schemas/Country' },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Країну не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/countries/{id}/teams': {
+        get: {
+          tags: ['Countries'],
+          summary: 'Отримати команди за країною',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID країни',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Команди країни успішно отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/CountryTeamsResponse' },
+                },
+              },
+            },
+            404: {
+              description: 'Країну не знайдено',
               content: {
                 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },

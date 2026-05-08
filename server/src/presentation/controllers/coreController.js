@@ -2,6 +2,7 @@
 
 const teamService = require('../../application/services/teamService');
 const tournamentService = require('../../application/services/tournamentService');
+const countryService = require('../../application/services/countryService');
 
 // GET /api/teams
 exports.getTeams = async (req, res, next) => {
@@ -46,6 +47,49 @@ exports.getTournamentById = async (req, res, next) => {
   try {
     const tournament = await tournamentService.getTournamentById(req.params.id);
     res.status(200).json({ data: tournament });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/countries
+exports.getCountries = async (req, res, next) => {
+  try {
+    const { QueryTypes } = require('sequelize');
+    const db = require('../../../models/index');
+    const countries = await db.sequelize.query(
+      `SELECT country_id, name, code, flag, description FROM country ORDER BY name`,
+      { type: QueryTypes.SELECT },
+    );
+    res.status(200).json({
+      message: 'Список країн успішно отримано',
+      count: countries.length,
+      data: countries,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/countries/:id
+exports.getCountryById = async (req, res, next) => {
+  try {
+    const country = await countryService.getCountryById(req.params.id);
+    res.status(200).json({ data: country });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/countries/:id/teams
+exports.getTeamsByCountry = async (req, res, next) => {
+  try {
+    const teams = await countryService.getTeamsByCountry(req.params.id);
+    res.status(200).json({
+      message: 'Команди країни успішно отримано',
+      count: teams.length,
+      data: teams,
+    });
   } catch (error) {
     next(error);
   }
