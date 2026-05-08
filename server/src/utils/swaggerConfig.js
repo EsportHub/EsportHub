@@ -203,6 +203,29 @@ const options = {
             },
           },
         },
+        PlayerItem: {
+          type: 'object',
+          properties: {
+            player_id: { type: 'integer', example: 1 },
+            nickname: { type: 'string', example: 's1mple' },
+            real_name: { type: 'string', example: 'Oleksandr Kostyliev' },
+            birth_date: { type: 'string', format: 'date', example: '1997-10-02' },
+            country: { type: 'string', example: 'Ukraine' },
+            team: { type: 'string', example: 'Natus Vincere' },
+            team_logo: { type: 'string', example: 'https://cdn.example.com/navi.png' },
+          },
+        },
+        PlayersListResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Список гравців успішно отримано' },
+            count: { type: 'integer', example: 5 },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/PlayerItem' },
+            },
+          },
+        },
       },
     },
     paths: {
@@ -615,6 +638,58 @@ const options = {
             },
             404: {
               description: 'Країну не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/players': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати список всіх гравців',
+          responses: {
+            200: {
+              description: 'Список гравців успішно отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/PlayersListResponse' },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/players/{id}': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати гравця за ID',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID гравця',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Гравця знайдено',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      data: { $ref: '#/components/schemas/PlayerItem' },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Гравця не знайдено',
               content: {
                 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },
