@@ -75,7 +75,6 @@ app.use((req, res) => {
 // 7. Error handler
 app.use(errorHandler);
 
-
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   logger.info(`Сервер запущено на порту ${PORT}`);
