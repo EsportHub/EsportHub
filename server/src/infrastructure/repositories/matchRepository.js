@@ -73,6 +73,28 @@ class MatchRepository {
     );
     return matches;
   }
+
+  async findUpcoming(minutesAhead = 30) {
+    const matches = await db.sequelize.query(
+      `SELECT
+      m.match_id,
+      m.start_time,
+      m.status,
+      t1.team_id AS team1_id,
+      t1.name AS team1_name,
+      t2.team_id AS team2_id,
+      t2.name AS team2_name,
+      tour.name AS tournament_name
+    FROM \`match\` m
+    LEFT JOIN team t1 ON m.team1_id = t1.team_id
+    LEFT JOIN team t2 ON m.team2_id = t2.team_id
+    LEFT JOIN tournament tour ON m.tournament_id = tour.tournament_id
+    WHERE m.status = 'upcoming'
+      AND m.start_time BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL :minutes MINUTE)`,
+      { replacements: { minutes: minutesAhead }, type: QueryTypes.SELECT },
+    );
+    return matches;
+  }
 }
 
 module.exports = new MatchRepository();

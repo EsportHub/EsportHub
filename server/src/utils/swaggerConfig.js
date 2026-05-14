@@ -697,6 +697,88 @@ const options = {
           },
         },
       },
+      '/api/matches/subscriptions': {
+        post: {
+          tags: ['Matches'],
+          summary: 'Підписатись на матч',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['user_id', 'match_id'],
+                  properties: {
+                    user_id: { type: 'integer', example: 1 },
+                    match_id: { type: 'integer', example: 3 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            201: { description: 'Підписку на матч додано' },
+            404: {
+              description: 'Матч не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+            409: {
+              description: 'Вже підписані на цей матч',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+        delete: {
+          tags: ['Matches'],
+          summary: 'Відписатись від матчу',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['user_id', 'match_id'],
+                  properties: {
+                    user_id: { type: 'integer', example: 1 },
+                    match_id: { type: 'integer', example: 3 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Підписку на матч видалено' },
+            404: {
+              description: 'Підписку не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches/subscriptions/{userId}': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати підписки користувача на матчі',
+          parameters: [
+            {
+              name: 'userId',
+              in: 'path',
+              required: true,
+              description: 'ID користувача',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Підписки на матчі отримано' },
+          },
+        },
+      },
     },
   },
   apis: [],

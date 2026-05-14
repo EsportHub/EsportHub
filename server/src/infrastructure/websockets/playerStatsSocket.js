@@ -35,6 +35,17 @@ const initWebSocket = (io) => {
     socket.on('disconnect', () => {
       logger.info(`WebSocket: клієнт відключився — ${socket.id}`);
     });
+    // Після існуючого socket.on('connection', ...) додай всередину:
+    socket.on('subscribe:user', ({ userId }) => {
+      if (!userId) return;
+      socket.join(`user:${userId}`);
+      logger.info(`WebSocket: користувач ${userId} підписався на сповіщення`);
+    });
+
+    socket.on('unsubscribe:user', ({ userId }) => {
+      socket.leave(`user:${userId}`);
+      logger.info(`WebSocket: користувач ${userId} відписався від сповіщень`);
+    });
   });
 };
 

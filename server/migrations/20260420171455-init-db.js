@@ -293,7 +293,24 @@ module.exports = {
       },
       create_time: { type: Sequelize.DATE, allowNull: false },
     });
-
+    await queryInterface.createTable('match_subscription', {
+      id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+      user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'users', key: 'user_id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      match_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'match', key: 'match_id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      create_time: { type: Sequelize.DATE, allowNull: false },
+    });
     // ✅ ВИПРАВЛЕНО ТУТ
     await queryInterface.createTable('notification', {
       notification_id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
@@ -318,6 +335,7 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
+    await queryInterface.dropTable('match_subscription');
     await queryInterface.dropTable('notification');
     await queryInterface.dropTable('favorite_team');
     await queryInterface.dropTable('player_match_stats');

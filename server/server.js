@@ -10,6 +10,9 @@ const logger = require('./src/utils/logger');
 const errorHandler = require('./src/presentation/middlewares/errorHandler');
 const swaggerSpec = require('./src/utils/swaggerConfig');
 const { initWebSocket } = require('./src/infrastructure/websockets/playerStatsSocket');
+const {
+  initMatchNotificationScheduler,
+} = require('./src/infrastructure/websockets/matchNotificationScheduler');
 
 const healthRoutes = require('./src/presentation/routes/health.routes');
 const coreRoutes = require('./src/presentation/routes/core.routes');
@@ -30,6 +33,7 @@ const io = new Server(server, {
 });
 initWebSocket(io);
 
+initMatchNotificationScheduler(io);
 // 1. Базові middleware
 app.use(
   cors({
