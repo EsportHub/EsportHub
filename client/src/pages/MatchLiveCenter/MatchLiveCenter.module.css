@@ -1,0 +1,338 @@
+/* --- ОСНОВНИЙ КОНТЕЙНЕР --- */
+.pageWrapper {
+  background: #000;
+  min-height: 100vh;
+  color: #fff;
+  padding: 0 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1; /* Щоб футер притискався до низу, якщо контенту мало */
+  padding-bottom: 4rem;
+}
+
+/* Match Info (Share btn row) */
+.matchHeader {
+  display: flex;
+  justify-content: flex-end; /* Вирівнюємо кнопку вправо */
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Share Button */
+.shareBtn {
+  background: rgba(168, 0, 255, 0.1);
+  border: 1px solid #a800ff;
+  color: #a800ff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.shareBtn:hover {
+  background: #a800ff;
+  color: #fff;
+}
+
+/* Stream Placeholder */
+.streamArea {
+  margin-top: 2rem;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 20px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.playerPlaceholder p {
+  margin-top: 15px;
+  color: #a800ff;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* --- СКОРБОРД (ВЕРХ) --- */
+.scoreboardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  background: #0a0a0a;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #1a1a1a;
+}
+
+.teamLogo {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  width: 150px;
+  text-align: center;
+}
+
+.scoreCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tournamentInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.liveBadge {
+  border: 1px solid #ff0000;
+  color: #ff0000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: bold;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+
+.scoreNumbers {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 5px;
+}
+
+.currentMap {
+  border: 1px solid #333;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+/* --- ПІК / БАН --- */
+.pickBanSection {
+  margin: 3rem 0;
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+}
+
+.pickBanRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pbCard {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #444;
+  transition: transform 0.2s ease;
+}
+
+.pbCard:hover {
+  transform: translateY(-3px);
+}
+
+.pbType {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.pbMap {
+  font-size: 0.75rem;
+  color: #ccc;
+  margin-top: 5px;
+}
+
+/* --- ТАБЛИЦІ СТАТИСТИКИ --- */
+.statsSection {
+  margin-top: 3rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.statsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.statsTableContainer {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.teamBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.teamColor {
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+}
+
+.teamBadge h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.statsTable th {
+  text-align: left;
+  padding: 12px 10px;
+  color: #666;
+  font-weight: 600;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.statsTable td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #111;
+}
+
+.playerCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.avatarPlaceholder {
+  width: 28px;
+  height: 28px;
+  background: #222;
+  border-radius: 50%;
+}
+
+.ratingBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.infoColumn {
+  border-left: 1px solid #1a1a1a;
+  padding-left: 30px;
+}
+
+.timelinePlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #0a0a0a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #1a1a1a;
+}
+
+/* --- TOAST --- */
+.toast {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: #0d0d0d;
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 10000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 0, 255, 0.2);
+  border-left: 4px solid #a800ff;
+  animation: slideLeft 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.toastIcon {
+  width: 24px;
+  height: 24px;
+  background: #a800ff;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.toastSuccess {
+  border-left-color: #a800ff;
+  box-shadow: 0 0 20px rgba(168, 0, 255, 0.3);
+}
+
+.toastError {
+  border-left-color: #ff0055;
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.footerLink {
+  color: #a800ff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.footerLink:hover {
+  text-shadow: 0 0 10px rgba(168, 0, 255, 0.6);
+}
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}

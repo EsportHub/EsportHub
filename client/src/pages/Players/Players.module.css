@@ -1,0 +1,111 @@
+.content {
+  flex: 1;
+  padding: 2rem 4rem 4rem 4rem;
+  background: #000;
+  min-height: 100vh;
+  color: #fff;
+}
+
+.matchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Використовуємо ваш стиль для селекта та інпуту */
+.shareBtn {
+  background: rgba(168, 0, 255, 0.05);
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.shareBtn:focus {
+  border-color: #a800ff;
+  background: rgba(168, 0, 255, 0.1);
+}
+
+.statsTableContainer {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.teamBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.teamColor {
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+}
+
+.teamBadge h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.statsTable th {
+  text-align: left;
+  padding: 15px 10px;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.statsTable td {
+  padding: 15px 10px;
+  border-bottom: 1px solid #111;
+}
+
+.playerCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarPlaceholder {
+  width: 32px;
+  height: 32px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #333;
+}
+
+.ratingBadge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
