@@ -1,0 +1,250 @@
+.dashboard {
+  background-color: #000000;
+  color: #ffffff;
+  min-height: 100vh;
+  padding: 0 4rem;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #a800ff;
+  letter-spacing: 1px;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.activeLink {
+  color: #a800ff !important;
+  border-bottom: 2px solid #a800ff;
+  padding-bottom: 4px;
+}
+
+.headerIcons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatarCircle {
+  width: 40px;
+  height: 40px;
+  background: #a800ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.profileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #a800ff;
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: 2rem;
+}
+
+.welcomeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.welcomeTitle h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.welcomeTitle h1 span {
+  color: #a800ff;
+}
+
+.welcomeTitle p {
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+/* Пошук */
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: #fff;
+  width: 280px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: #a800ff;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+}
+
+/* СІТКА */
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.teamCard {
+  position: relative;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 3rem 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.teamCard:hover {
+  border-color: #a800ff;
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(168, 0, 255, 0.15);
+}
+
+/* ФІКС ЗІРОЧКИ */
+.favoriteBtn {
+  all: unset; /* Повне скидання стилів браузера для кнопок */
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+}
+
+.favActive svg {
+  filter: drop-shadow(0 0 8px #a800ff);
+}
+
+/* ФІКС ЛОГОТИПІВ */
+.teamLogoLarge {
+  width: 85px;
+  height: 85px;
+  background: #111;
+  border: 2px solid #333;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.logoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px; /* Щоб лого не торкалося країв кола */
+}
+
+.teamCard:hover .teamLogoLarge {
+  border-color: #a800ff;
+  box-shadow: 0 0 15px #a800ff;
+}
+
+.teamNameMain {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.teamTag {
+  color: #a800ff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.footer {
+  margin-top: 5rem;
+  padding: 2rem 0;
+  border-top: 1px solid #111;
+  display: flex;
+  justify-content: space-between;
+  color: #444;
+  font-size: 0.8rem;
+}
+
+.footer a {
+  color: #444;
+  text-decoration: none;
+}
+/* СТИЛІ ТОСТІВ ІЗ SIGNIN.MODULE.CSS */
+.toast {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: #0d0d0d;
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 10000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 0, 255, 0.2);
+  border-left: 4px solid #a800ff;
+  animation: slideLeft 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.toastIcon {
+  width: 24px; height: 24px; background: #a800ff; color: #fff;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 14px;
+}
+
+.toastSuccess { border-left-color: #a800ff; box-shadow: 0 0 20px rgba(168, 0, 255, 0.3); }
+.toastError { border-left-color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
+
+@keyframes slideLeft {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
