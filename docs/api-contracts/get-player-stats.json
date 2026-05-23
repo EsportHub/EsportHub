@@ -1,0 +1,29 @@
+{
+  "endpoint": "GET /api/v1/matches/{matchId}/player-stats",
+  "request": {
+    "matchId": "number"
+  },
+  "response": {
+    "matchId": 44,
+    "status": "LIVE",
+    "players": [
+      {
+        "playerId": 101,
+        "nickname": "s1mple",
+        "teamId": 12,
+        "kills": 18,
+        "deaths": 9,
+        "assists": 6
+      },
+      {
+        "playerId": 102,
+        "nickname": "b1t",
+        "teamId": 12,
+        "kills": 14,
+        "deaths": 10,
+        "assists": 4
+      }
+    ],
+    "updatedAt": "2026-04-08T13:05:00Z"
+  }
+}

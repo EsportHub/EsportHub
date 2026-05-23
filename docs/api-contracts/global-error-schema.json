@@ -1,0 +1,26 @@
+{
+  "standardError": {
+    "timestamp": "2026-04-08T13:10:00Z",
+    "errorCode": "TEAM_NOT_FOUND",
+    "message": "Команду не знайдено",
+    "path": "/api/v1/favorite-teams",
+    "details": []
+  },
+  "validationError": {
+    "timestamp": "2026-04-08T13:12:00Z",
+    "errorCode": "VALIDATION_ERROR",
+    "message": "Некоректні дані запиту",
+    "path": "/api/v1/favorite-teams",
+    "details": [
+      "Поле userId є обов'язковим",
+      "Поле teamId має бути числом"
+    ]
+  },
+  "businessError": {
+    "timestamp": "2026-04-08T13:15:00Z",
+    "errorCode": "TEAM_ALREADY_FAVORITED",
+    "message": "Команда вже додана в обране",
+    "path": "/api/v1/favorite-teams",
+    "details": []
+  }
+}

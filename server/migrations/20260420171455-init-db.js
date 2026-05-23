@@ -36,14 +36,7 @@ module.exports = {
       email: { type: Sequelize.STRING(100), allowNull: false, unique: true },
       password_hash: { type: Sequelize.STRING(255), allowNull: false },
       theme_preference: { type: Sequelize.STRING(10), allowNull: true },
-      game_id: {
-        // ← додай це
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'game', key: 'game_id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
+
     });
 
     await queryInterface.createTable('article', {

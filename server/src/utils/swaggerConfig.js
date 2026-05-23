@@ -779,51 +779,7 @@ const options = {
           },
         },
       },
-      '/api/search': {
-        get: {
-          tags: ['Search'],
-          summary: 'Універсальний пошук по командах, гравцях та турнірах',
-          parameters: [
-            {
-              name: 'q',
-              in: 'query',
-              required: true,
-              description: 'Пошуковий запит (мінімум 2 символи)',
-              schema: { type: 'string', example: 'Natus' },
-            },
-          ],
-          responses: {
-            200: {
-              description: 'Результати пошуку',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      message: { type: 'string', example: 'Результати пошуку' },
-                      query: { type: 'string', example: 'Natus' },
-                      data: {
-                        type: 'object',
-                        properties: {
-                          teams: { type: 'array', items: { type: 'object' } },
-                          players: { type: 'array', items: { type: 'object' } },
-                          tournaments: { type: 'array', items: { type: 'object' } },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            400: {
-              description: 'Запит занадто короткий',
-              content: {
-                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
-              },
-            },
-          },
-        },
-      },
+
     },
   },
   apis: [],
