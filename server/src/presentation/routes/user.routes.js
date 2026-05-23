@@ -14,7 +14,7 @@ router.get('/profile/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const [users] = await db.sequelize.query(
-
+      `SELECT user_id, username, email, theme_preference, game_id
        FROM users WHERE user_id = :id`,
       { replacements: { id } },
     );
@@ -41,7 +41,9 @@ router.patch(
   async (req, res, next) => {
     try {
       const { id } = req.params;
+      const { username, theme_preference, game_id } = req.body;
 
+      if (!username && !theme_preference && !game_id) {
         const error = new Error('Немає даних для оновлення');
         error.statusCode = 400;
         error.errorCode = 'NO_DATA';
@@ -59,14 +61,17 @@ router.patch(
         fields.push('theme_preference = :theme_preference');
         replacements.theme_preference = theme_preference;
       }
-
+      if (game_id) {
+        fields.push('game_id = :game_id');
+        replacements.game_id = game_id;
+      }
 
       await db.sequelize.query(`UPDATE users SET ${fields.join(', ')} WHERE user_id = :id`, {
         replacements,
       });
 
       const [updated] = await db.sequelize.query(
-
+        `SELECT user_id, username, email, theme_preference, game_id FROM users WHERE user_id = :id`,
         { replacements: { id } },
       );
 
