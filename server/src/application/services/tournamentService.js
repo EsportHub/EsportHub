@@ -19,8 +19,8 @@ class TournamentService {
     return tournament;
   }
 
-  async getTournamentsForMap() {
-    return tournamentRepository.findForMap();
+  async getTournamentsForMap(gameId = null) {
+    return tournamentRepository.findForMap(gameId);
   }
 }
 
