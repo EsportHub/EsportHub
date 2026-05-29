@@ -3,6 +3,9 @@
 const teamService = require('../../application/services/teamService');
 const tournamentService = require('../../application/services/tournamentService');
 const countryService = require('../../application/services/countryService');
+
+const pandaScoreService = require('../../infrastructure/external/pandaScoreService');
+
 const db = require('../../../models/index');
 
 // GET /api/teams
@@ -148,6 +151,24 @@ exports.search = async (req, res, next) => {
       message: 'Результати пошуку',
       query: q,
       data: { teams, players, tournaments },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/matches/external?tier=s&date=2026-05-23
+exports.getExternalMatches = async (req, res, next) => {
+  try {
+    const { tier, date } = req.query;
+    const matches = date
+      ? await pandaScoreService.getMatchesByDate(date, tier || null)
+      : await pandaScoreService.getTodayMatches(tier || null);
+
+    res.status(200).json({
+      message: 'Матчі отримано з PandaScore',
+      count: matches.length,
+      data: matches,
     });
   } catch (error) {
     next(error);
