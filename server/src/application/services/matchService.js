@@ -62,7 +62,11 @@ class MatchService {
     const tournamentId = filters.tournamentId || null;
 
     const { matches, total } = await matchRepository.findArchive({
-      teamId, year, tournamentId, page, limit,
+      teamId,
+      year,
+      tournamentId,
+      page,
+      limit,
     });
 
     return {

@@ -976,6 +976,71 @@ const options = {
             },
           },
         },
+        '/api/tournaments/{id}/bracket': {
+          get: {
+            tags: ['Tournaments'],
+            summary: 'Отримати турнірну сітку',
+            parameters: [
+              {
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'ID турніру',
+                schema: { type: 'integer', example: 1 },
+              },
+            ],
+            responses: {
+              200: {
+                description: 'Турнірну сітку отримано',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        message: { type: 'string', example: 'Турнірну сітку отримано' },
+                        data: {
+                          type: 'object',
+                          properties: {
+                            tournamentId: { type: 'integer', example: 1 },
+                            totalRounds: { type: 'integer', example: 3 },
+                            rounds: {
+                              type: 'object',
+                              additionalProperties: {
+                                type: 'array',
+                                items: {
+                                  type: 'object',
+                                  properties: {
+                                    bracketMatchId: { type: 'integer', example: 1 },
+                                    position: { type: 'integer', example: 1 },
+                                    nextBracketMatchId: {
+                                      type: 'integer',
+                                      nullable: true,
+                                      example: 5,
+                                    },
+                                    match: { type: 'object', nullable: true },
+                                    team1: { type: 'object', nullable: true },
+                                    team2: { type: 'object', nullable: true },
+                                    winner: { type: 'object', nullable: true },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              404: {
+                description: 'Сітку не знайдено',
+                content: {
+                  'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+                },
+              },
+            },
+          },
+        },
       },
     },
   },
