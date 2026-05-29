@@ -226,6 +226,52 @@ const options = {
             },
           },
         },
+        MatchArchiveItem: {
+          type: 'object',
+          properties: {
+            matchId: { type: 'integer', example: 1 },
+            status: { type: 'string', example: 'finished' },
+            startTime: { type: 'string', format: 'date-time', example: '2024-03-20T14:00:00.000Z' },
+            year: { type: 'integer', example: 2024 },
+            tournamentId: { type: 'integer', example: 1 },
+            tournament: { type: 'string', example: 'PGL Major Copenhagen 2024' },
+            team1: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'Natus Vincere' },
+                logo: { type: 'string', example: 'https://cdn.example.com/navi.png' },
+                score: { type: 'integer', example: 2 },
+              },
+            },
+            team2: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'Astralis' },
+                logo: { type: 'string', example: 'https://cdn.example.com/astralis.png' },
+                score: { type: 'integer', example: 0 },
+              },
+            },
+          },
+        },
+        MatchArchiveResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Архів матчів отримано' },
+            pagination: {
+              type: 'object',
+              properties: {
+                page: { type: 'integer', example: 1 },
+                limit: { type: 'integer', example: 20 },
+                total: { type: 'integer', example: 2 },
+                pages: { type: 'integer', example: 1 },
+              },
+            },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/MatchArchiveItem' },
+            },
+          },
+        },
       },
     },
     paths: {
@@ -867,6 +913,65 @@ const options = {
                     },
                   },
                 },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches/archive': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Архів завершених матчів з фільтрами',
+          parameters: [
+            {
+              name: 'teamId',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за командою',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'year',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за роком',
+              schema: { type: 'integer', example: 2024 },
+            },
+            {
+              name: 'tournamentId',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за турніром',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'page',
+              in: 'query',
+              required: false,
+              description: 'Номер сторінки',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              required: false,
+              description: 'Кількість записів на сторінці',
+              schema: { type: 'integer', example: 20 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Архів матчів отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/MatchArchiveResponse' },
+                },
+              },
+            },
+            500: {
+              description: 'Помилка сервера',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },
             },
           },
