@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const coreController = require('../controllers/coreController');
+const bracketController = require('../controllers/bracketController');
 
 router.get('/teams', coreController.getTeams);
 router.get('/teams/:id', coreController.getTeamById);
@@ -18,4 +19,5 @@ router.get('/countries/:id/teams', coreController.getTeamsByCountry);
 router.get('/matches/external', coreController.getExternalMatches);
 
 router.get('/search', coreController.search);
+router.get('/tournaments/:id/bracket', bracketController.getBracket);
 module.exports = router;

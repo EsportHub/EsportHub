@@ -15,6 +15,9 @@ router.get('/subscriptions/:userId', matchController.getSubscriptions);
 router.post('/subscriptions', matchController.subscribe);
 router.delete('/subscriptions', matchController.unsubscribe);
 
+// ВАЖЛИВО: /archive має бути ДО /:matchId
+router.get('/archive', matchController.getArchive);
+
 // GET /api/matches/:matchId/score
 router.get('/:matchId/score', matchController.getMatchScore);
 
