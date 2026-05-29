@@ -424,6 +424,15 @@ const options = {
         get: {
           tags: ['Tournaments'],
           summary: 'Отримати турніри з координатами для мапи',
+          parameters: [
+            {
+              name: 'game_id',
+              in: 'query',
+              required: false,
+              description: 'Фільтр по грі (ID гри)',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
           responses: {
             200: {
               description: 'Турніри для мапи успішно отримано',
@@ -824,7 +833,45 @@ const options = {
           },
         },
       },
-
+      '/api/matches/external': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати матчі з PandaScore з фільтром по даті та tier',
+          parameters: [
+            {
+              name: 'tier',
+              in: 'query',
+              required: false,
+              description: 'Рівень турніру (s, a, b, c, d)',
+              schema: { type: 'string', example: 's' },
+            },
+            {
+              name: 'date',
+              in: 'query',
+              required: false,
+              description: 'Дата у форматі YYYY-MM-DD. За замовчуванням — сьогодні',
+              schema: { type: 'string', example: '2026-05-23' },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Матчі отримано з PandaScore',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Матчі отримано з PandaScore' },
+                      count: { type: 'integer', example: 10 },
+                      data: { type: 'array', items: { type: 'object' } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   },
   apis: [],
