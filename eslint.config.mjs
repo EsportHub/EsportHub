@@ -24,9 +24,27 @@ export default [
     rules: {
       ...reactPlugin.configs.recommended.rules,
       "prettier/prettier": "error",
-      "react/react-in-jsx-scope": "off", // Для сучасного React це не потрібно
+      "react/react-in-jsx-scope": "off",
       "no-console": "warn",
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // ← ігнорує _next, _err і т.д.
     },
   },
-  prettierConfig, // Вимикає правила ESLint, що заважають Prettier
+  // ← блок для тестів
+  {
+    files: ["**/*.test.js", "**/*.spec.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+        describe:  "readonly",
+        it:        "readonly",
+        test:      "readonly",
+        expect:    "readonly",
+        beforeAll: "readonly",
+        afterAll:  "readonly",
+        beforeEach: "readonly",
+        afterEach:  "readonly",
+      },
+    },
+  },
+  prettierConfig,
 ];
