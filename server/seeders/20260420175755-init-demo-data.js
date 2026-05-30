@@ -139,6 +139,64 @@ module.exports = {
       },
     ]);
 
+    // PLAYER TRANSFERS
+    await queryInterface.bulkInsert('player_transfer', [
+      {
+        player_id: 1,
+        from_team_id: null,
+        to_team_id: 1,
+        transfer_date: '2016-08-17',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Natus Vincere',
+      },
+      {
+        player_id: 2,
+        from_team_id: null,
+        to_team_id: 1,
+        transfer_date: '2018-03-12',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Natus Vincere',
+      },
+      {
+        player_id: 3,
+        from_team_id: null,
+        to_team_id: 4,
+        transfer_date: '2018-10-01',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Team Vitality',
+      },
+      {
+        player_id: 4,
+        from_team_id: 3,
+        to_team_id: 2,
+        transfer_date: '2021-01-11',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Перехід з Astralis до Team Liquid',
+      },
+      {
+        player_id: 4,
+        from_team_id: 2,
+        to_team_id: 3,
+        transfer_date: '2022-06-30',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Повернення до Astralis',
+      },
+      {
+        player_id: 5,
+        from_team_id: null,
+        to_team_id: 2,
+        transfer_date: '2019-05-01',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Team Liquid',
+      },
+    ]);
+
     // MATCH
     await queryInterface.bulkInsert('match', [
       {
@@ -308,6 +366,7 @@ module.exports = {
   },
 
   async down(queryInterface) {
+    await queryInterface.bulkDelete('player_transfer', null, {});
     await queryInterface.bulkDelete('bracket_match', null, {});
     await queryInterface.bulkDelete('player_match_stats', null, {});
     await queryInterface.bulkDelete('match', null, {});

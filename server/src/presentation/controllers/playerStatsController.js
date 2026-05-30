@@ -2,6 +2,7 @@
 
 const playerStatsService = require('../../application/services/playerStatsService');
 const playerService = require('../../application/services/playerService');
+const transferService = require('../../application/services/transferService');
 
 // GET /api/players/stats — всі гравці
 exports.getAllPlayersStats = async (req, res, next) => {
@@ -56,6 +57,20 @@ exports.getPlayerById = async (req, res, next) => {
   try {
     const player = await playerService.getPlayerById(req.params.id);
     res.status(200).json({ data: player });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/players/:id/transfers
+exports.getPlayerTransfers = async (req, res, next) => {
+  try {
+    const transfers = await transferService.getPlayerTransfers(req.params.id);
+    res.status(200).json({
+      message: 'Історію трансферів отримано',
+      count: transfers.length,
+      data: transfers,
+    });
   } catch (error) {
     next(error);
   }

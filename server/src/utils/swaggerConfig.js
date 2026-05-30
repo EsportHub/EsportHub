@@ -1042,6 +1042,96 @@ const options = {
           },
         },
       },
+      '/api/players/{id}/transfers': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати історію трансферів гравця',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID гравця',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Історію трансферів отримано',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Історію трансферів отримано' },
+                      count: { type: 'integer', example: 2 },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            transferId: { type: 'integer', example: 1 },
+                            transferDate: { type: 'string', format: 'date', example: '2016-08-17' },
+                            transferFee: { type: 'number', nullable: true, example: null },
+                            status: {
+                              type: 'string',
+                              enum: ['confirmed', 'pending', 'cancelled'],
+                              example: 'confirmed',
+                            },
+                            notes: {
+                              type: 'string',
+                              nullable: true,
+                              example: 'Підписання з Natus Vincere',
+                            },
+                            player: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer', example: 1 },
+                                nickname: { type: 'string', example: 's1mple' },
+                                realName: { type: 'string', example: 'Oleksandr Kostyliev' },
+                              },
+                            },
+                            fromTeam: {
+                              type: 'object',
+                              nullable: true,
+                              properties: {
+                                id: { type: 'integer', example: 3 },
+                                name: { type: 'string', example: 'Astralis' },
+                                logo: {
+                                  type: 'string',
+                                  example: 'https://cdn.example.com/astralis.png',
+                                },
+                              },
+                            },
+                            toTeam: {
+                              type: 'object',
+                              nullable: true,
+                              properties: {
+                                id: { type: 'integer', example: 1 },
+                                name: { type: 'string', example: 'Natus Vincere' },
+                                logo: {
+                                  type: 'string',
+                                  example: 'https://cdn.example.com/navi.png',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Історію трансферів не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
     },
   },
   apis: [],
