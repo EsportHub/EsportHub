@@ -66,7 +66,7 @@
 .userInfo { flex: 1; }
 .nameHeader { display: flex; align-items: center; gap: 1rem; }
 .nickname { font-size: 2.5rem; margin: 0; font-weight: 800; }
-.gameBadge { background: rgba(168, 0, 255, 0.1); border: 1px solid #a800ff; padding: 6px; border-radius: 8px; color: #a800ff; display: flex; }
+.gameBadge { background: rgba(168, 0, 255, 0.1); border: 1px solid #a800ff; padding: 4px 10px; border-radius: 6px; color: #a800ff; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
 
 .bioText { color: #888; margin: 0.5rem 0 1.5rem; font-size: 1rem; }
 .userMeta { display: flex; gap: 1.5rem; color: #555; font-size: 0.85rem; }
@@ -76,9 +76,27 @@
 .editInput { background: #000; border: 1px solid #a800ff; color: #fff; font-size: 1.5rem; padding: 0.5rem; border-radius: 6px; margin-bottom: 1rem; }
 .editTextarea { background: #0a0a0a; border: 1px solid #222; color: #ccc; padding: 0.8rem; border-radius: 6px; width: 100%; resize: none; }
 .disciplineSelector p { font-size: 0.7rem; color: #444; letter-spacing: 1px; margin-bottom: 0.5rem; }
-.gameOptions { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.gameOpt { background: #111; border: 1px solid #333; color: #666; padding: 6px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.gameOptActive { border-color: #a800ff; color: #fff; background: rgba(168, 0, 255, 0.1); }
+.gameOptions { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.gameOpt {
+  background: #111;
+  border: 1px solid #333;
+  color: #666;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all .18s;
+}
+.gameOptActive {
+  border-color: #a800ff;
+  color: #fff;
+  background: rgba(168, 0, 255, 0.15);
+  box-shadow: 0 0 10px rgba(168, 0, 255, 0.25);
+}
+.gameOpt:hover:not(.gameOptActive) { border-color: #555; color: #aaa; }
 
 .editBtn, .saveBtn { background: transparent; border: 1px solid #a800ff; color: #a800ff; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .saveBtn { background: #a800ff; color: #fff; }

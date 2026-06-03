@@ -72,6 +72,11 @@ services:
     container_name: esporthub-frontend
     ports:
       - '3000:3000'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
     networks:

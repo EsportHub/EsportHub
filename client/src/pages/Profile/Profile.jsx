@@ -4,13 +4,112 @@ import { PageLayout } from '../../components/layout/PageLayout';
 import { PageLoader, Spinner } from '../../components/common/UI';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { userService } from '../../api/services';
+import { userService, favoriteService } from '../../api/services';
 
 const GAMES = [
   { id: 'cs2', name: 'CS2', role: 'Sniper' },
   { id: 'dota2', name: 'Dota 2', role: 'Support' },
-  { id: 'valorant', name: 'Valorant', role: 'Duelist' },
+  { id: 'lol', name: 'League of Legends', role: 'Mid Laner' },
 ];
+
+const GameIcon = ({ gameId, size = 18 }) => {
+  const style = { width: size, height: size, display: 'inline-block', flexShrink: 0 };
+  if (gameId === 'cs2')
+    return (
+      <svg style={style} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#1a1a2e" />
+        <circle cx="16" cy="16" r="7" stroke="#f5a623" strokeWidth="1.5" fill="none" />
+        <line
+          x1="16"
+          y1="6"
+          x2="16"
+          y2="10"
+          stroke="#f5a623"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="16"
+          y1="22"
+          x2="16"
+          y2="26"
+          stroke="#f5a623"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="6"
+          y1="16"
+          x2="10"
+          y2="16"
+          stroke="#f5a623"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="22"
+          y1="16"
+          x2="26"
+          y2="16"
+          stroke="#f5a623"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <circle cx="16" cy="16" r="2" fill="#f5a623" />
+      </svg>
+    );
+  if (gameId === 'dota2')
+    return (
+      <svg style={style} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#1a0a0a" />
+        <path
+          d="M16 5 L24 9 L24 18 Q24 24 16 27 Q8 24 8 18 L8 9 Z"
+          stroke="#c8102e"
+          strokeWidth="1.5"
+          fill="rgba(200,16,46,0.15)"
+        />
+        <line
+          x1="13"
+          y1="11"
+          x2="19"
+          y2="21"
+          stroke="#c8102e"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <line
+          x1="19"
+          y1="11"
+          x2="13"
+          y2="21"
+          stroke="#c8102e"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  if (gameId === 'lol')
+    return (
+      <svg style={style} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#0a0e1a" />
+        <polygon
+          points="16,4 26,10 26,22 16,28 6,22 6,10"
+          stroke="#c89b3c"
+          strokeWidth="1.5"
+          fill="rgba(200,155,60,0.1)"
+        />
+        <path
+          d="M12 11 L12 21 L20 21"
+          stroke="#c89b3c"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    );
+  return null;
+};
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -26,7 +125,8 @@ export default function Profile() {
     country: 'Ukraine',
   });
 
-  const userId = user?.id;
+  // Підтримка різних назв поля id з бекенду
+  const userId = user?.user_id || user?.userId || user?.id;
 
   useEffect(() => {
     if (!userId) return;
@@ -34,13 +134,13 @@ export default function Profile() {
       try {
         const [profRes, favsRes] = await Promise.all([
           userService.getProfile(userId),
-          userService.getFavoriteTeams(userId),
+          favoriteService.getTeams(userId),
         ]);
         const d = profRes.data?.data || profRes.data;
         const favs = favsRes.data?.data || favsRes.data || [];
 
         setProfile({
-          nickname: d.username || user?.name || 'Гравець',
+          nickname: d.username || user?.username || user?.name || 'Гравець',
           bio: localStorage.getItem(`bio_${userId}`) || 'Кіберспортсмен. Завжди в грі.',
           game: localStorage.getItem(`game_${userId}`) || 'cs2',
           country: 'Ukraine',
@@ -73,7 +173,7 @@ export default function Profile() {
 
   const removeTeam = async (teamId) => {
     try {
-      await userService.removeFavoriteTeam(userId, teamId);
+      await favoriteService.removeTeam(userId, teamId);
       setFavTeams((p) => p.filter((t) => (t.team_id || t.id) !== teamId));
       addToast('Команду видалено з обраного', 'success');
     } catch (e) {
@@ -158,24 +258,46 @@ export default function Profile() {
                     outline: 'none',
                   }}
                 />
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {GAMES.map((g) => (
-                    <button
-                      key={g.id}
-                      onClick={() => setProfile((p) => ({ ...p, game: g.id }))}
-                      style={{
-                        background: profile.game === g.id ? 'rgba(168,0,255,.15)' : '#111',
-                        border: `1px solid ${profile.game === g.id ? '#a800ff' : '#333'}`,
-                        color: profile.game === g.id ? '#fff' : '#666',
-                        padding: '6px 14px',
-                        borderRadius: 6,
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                      }}
-                    >
-                      {g.name}
-                    </button>
-                  ))}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <span
+                    style={{
+                      fontSize: '0.7rem',
+                      color: '#555',
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Оберіть гру
+                  </span>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {GAMES.map((g) => {
+                      const isActive = profile.game === g.id;
+                      return (
+                        <button
+                          key={g.id}
+                          onClick={() => setProfile((p) => ({ ...p, game: g.id }))}
+                          title={g.name}
+                          style={{
+                            background: isActive ? 'rgba(168,0,255,.15)' : '#111',
+                            border: `1px solid ${isActive ? '#a800ff' : '#333'}`,
+                            color: isActive ? '#fff' : '#666',
+                            padding: '8px 14px',
+                            borderRadius: 8,
+                            cursor: 'pointer',
+                            fontSize: '0.82rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            transition: 'all .18s',
+                            boxShadow: isActive ? '0 0 10px rgba(168,0,255,.25)' : 'none',
+                          }}
+                        >
+                          <GameIcon gameId={g.id} size={18} />
+                          {g.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
                 <textarea
                   value={profile.bio}
@@ -206,8 +328,12 @@ export default function Profile() {
                       padding: '4px 10px',
                       borderRadius: 6,
                       fontSize: '0.8rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
                     }}
                   >
+                    <GameIcon gameId={profile.game} size={16} />
                     {game?.name}
                   </span>
                 </div>
