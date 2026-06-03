@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "start": "node ./server/server.js"
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -31,6 +29,10 @@
     "prettier": "^3.8.1"
   },
   "dependencies": {
-    "wait-port": "^1.1.0"
+    "axios": "^1.16.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.4",
+    "sequelize": "^6.37.8"
   }
 }

@@ -53,6 +53,36 @@ class MatchService {
       team2: { name: m.team2_name, logo: m.team2_logo, score: m.score_team2 },
     }));
   }
+
+  async getArchive(filters) {
+    const page = parseInt(filters.page) || 1;
+    const limit = parseInt(filters.limit) || 20;
+    const year = filters.year ? parseInt(filters.year) : null;
+    const teamId = filters.teamId || null;
+    const tournamentId = filters.tournamentId || null;
+
+    const { matches, total } = await matchRepository.findArchive({
+      teamId,
+      year,
+      tournamentId,
+      page,
+      limit,
+    });
+
+    return {
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+      data: matches.map((m) => ({
+        matchId: m.match_id,
+        status: m.status,
+        startTime: m.start_time,
+        year: m.year,
+        tournamentId: m.tournament_id,
+        tournament: m.tournament_name,
+        team1: { name: m.team1_name, logo: m.team1_logo, score: m.score_team1 },
+        team2: { name: m.team2_name, logo: m.team2_logo, score: m.score_team2 },
+      })),
+    };
+  }
 }
 
 module.exports = new MatchService();

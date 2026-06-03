@@ -139,8 +139,102 @@ module.exports = {
       },
     ]);
 
+    // PLAYER TRANSFERS
+    await queryInterface.bulkInsert('player_transfer', [
+      {
+        player_id: 1,
+        from_team_id: null,
+        to_team_id: 1,
+        transfer_date: '2016-08-17',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Natus Vincere',
+      },
+      {
+        player_id: 2,
+        from_team_id: null,
+        to_team_id: 1,
+        transfer_date: '2018-03-12',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Natus Vincere',
+      },
+      {
+        player_id: 3,
+        from_team_id: null,
+        to_team_id: 4,
+        transfer_date: '2018-10-01',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Team Vitality',
+      },
+      {
+        player_id: 4,
+        from_team_id: 3,
+        to_team_id: 2,
+        transfer_date: '2021-01-11',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Перехід з Astralis до Team Liquid',
+      },
+      {
+        player_id: 4,
+        from_team_id: 2,
+        to_team_id: 3,
+        transfer_date: '2022-06-30',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Повернення до Astralis',
+      },
+      {
+        player_id: 5,
+        from_team_id: null,
+        to_team_id: 2,
+        transfer_date: '2019-05-01',
+        transfer_fee: null,
+        status: 'confirmed',
+        notes: 'Підписання з Team Liquid',
+      },
+    ]);
+
     // MATCH
     await queryInterface.bulkInsert('match', [
+      {
+        team1_id: 1,
+        team2_id: 2,
+        tournament_id: 1,
+        score_team1: 2,
+        score_team2: 0,
+        status: 'finished',
+        start_time: '2024-03-17 14:00:00',
+      },
+      {
+        team1_id: 3,
+        team2_id: 4,
+        tournament_id: 1,
+        score_team1: 1,
+        score_team2: 2,
+        status: 'finished',
+        start_time: '2024-03-17 17:00:00',
+      },
+      {
+        team1_id: 2,
+        team2_id: 3,
+        tournament_id: 1,
+        score_team1: 0,
+        score_team2: 2,
+        status: 'finished',
+        start_time: '2024-03-18 14:00:00',
+      },
+      {
+        team1_id: 1,
+        team2_id: 4,
+        tournament_id: 1,
+        score_team1: 2,
+        score_team2: 1,
+        status: 'finished',
+        start_time: '2024-03-18 17:00:00',
+      },
       {
         team1_id: 1,
         team2_id: 3,
@@ -151,17 +245,17 @@ module.exports = {
         start_time: '2024-03-20 14:00:00',
       },
       {
-        team1_id: 2,
-        team2_id: 4,
+        team1_id: 4,
+        team2_id: 2,
         tournament_id: 1,
-        score_team1: 1,
-        score_team2: 2,
+        score_team1: 2,
+        score_team2: 1,
         status: 'finished',
         start_time: '2024-03-21 16:00:00',
       },
       {
         team1_id: 1,
-        team2_id: 2,
+        team2_id: 4,
         tournament_id: 1,
         score_team1: 0,
         score_team2: 0,
@@ -169,6 +263,69 @@ module.exports = {
         start_time: '2026-06-01 15:00:00',
       },
     ]);
+
+    // BRACKET
+    await queryInterface.bulkInsert('bracket_match', [
+      {
+        tournament_id: 1,
+        match_id: 1,
+        round: 1,
+        position: 1,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 2,
+        round: 1,
+        position: 2,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 3,
+        round: 1,
+        position: 3,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 4,
+        round: 1,
+        position: 4,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 5,
+        round: 2,
+        position: 1,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 6,
+        round: 2,
+        position: 2,
+        next_bracket_match_id: null,
+      },
+      {
+        tournament_id: 1,
+        match_id: 7,
+        round: 3,
+        position: 1,
+        next_bracket_match_id: null,
+      },
+    ]);
+
+    await queryInterface.sequelize.query(
+      'UPDATE bracket_match SET next_bracket_match_id = 5 WHERE bracket_match_id IN (1, 2)',
+    );
+    await queryInterface.sequelize.query(
+      'UPDATE bracket_match SET next_bracket_match_id = 6 WHERE bracket_match_id IN (3, 4)',
+    );
+    await queryInterface.sequelize.query(
+      'UPDATE bracket_match SET next_bracket_match_id = 7 WHERE bracket_match_id IN (5, 6)',
+    );
 
     // MATCH MAP PHASE (pick/ban)
     await queryInterface.bulkInsert('match_map_phase', [
@@ -209,6 +366,8 @@ module.exports = {
   },
 
   async down(queryInterface) {
+    await queryInterface.bulkDelete('player_transfer', null, {});
+    await queryInterface.bulkDelete('bracket_match', null, {});
     await queryInterface.bulkDelete('player_match_stats', null, {});
     await queryInterface.bulkDelete('match', null, {});
     await queryInterface.bulkDelete('player', null, {});

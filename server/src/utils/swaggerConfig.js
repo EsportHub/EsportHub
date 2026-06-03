@@ -226,6 +226,52 @@ const options = {
             },
           },
         },
+        MatchArchiveItem: {
+          type: 'object',
+          properties: {
+            matchId: { type: 'integer', example: 1 },
+            status: { type: 'string', example: 'finished' },
+            startTime: { type: 'string', format: 'date-time', example: '2024-03-20T14:00:00.000Z' },
+            year: { type: 'integer', example: 2024 },
+            tournamentId: { type: 'integer', example: 1 },
+            tournament: { type: 'string', example: 'PGL Major Copenhagen 2024' },
+            team1: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'Natus Vincere' },
+                logo: { type: 'string', example: 'https://cdn.example.com/navi.png' },
+                score: { type: 'integer', example: 2 },
+              },
+            },
+            team2: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'Astralis' },
+                logo: { type: 'string', example: 'https://cdn.example.com/astralis.png' },
+                score: { type: 'integer', example: 0 },
+              },
+            },
+          },
+        },
+        MatchArchiveResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Архів матчів отримано' },
+            pagination: {
+              type: 'object',
+              properties: {
+                page: { type: 'integer', example: 1 },
+                limit: { type: 'integer', example: 20 },
+                total: { type: 'integer', example: 2 },
+                pages: { type: 'integer', example: 1 },
+              },
+            },
+            data: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/MatchArchiveItem' },
+            },
+          },
+        },
       },
     },
     paths: {
@@ -424,6 +470,15 @@ const options = {
         get: {
           tags: ['Tournaments'],
           summary: 'Отримати турніри з координатами для мапи',
+          parameters: [
+            {
+              name: 'game_id',
+              in: 'query',
+              required: false,
+              description: 'Фільтр по грі (ID гри)',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
           responses: {
             200: {
               description: 'Турніри для мапи успішно отримано',
@@ -776,6 +831,304 @@ const options = {
           ],
           responses: {
             200: { description: 'Підписки на матчі отримано' },
+          },
+        },
+      },
+      '/api/search': {
+        get: {
+          tags: ['Search'],
+          summary: 'Універсальний пошук по командах, гравцях та турнірах',
+          parameters: [
+            {
+              name: 'q',
+              in: 'query',
+              required: true,
+              description: 'Пошуковий запит (мінімум 2 символи)',
+              schema: { type: 'string', example: 'Natus' },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Результати пошуку',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Результати пошуку' },
+                      query: { type: 'string', example: 'Natus' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          teams: { type: 'array', items: { type: 'object' } },
+                          players: { type: 'array', items: { type: 'object' } },
+                          tournaments: { type: 'array', items: { type: 'object' } },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description: 'Запит занадто короткий',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches/external': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати матчі з PandaScore з фільтром по даті та tier',
+          parameters: [
+            {
+              name: 'tier',
+              in: 'query',
+              required: false,
+              description: 'Рівень турніру (s, a, b, c, d)',
+              schema: { type: 'string', example: 's' },
+            },
+            {
+              name: 'date',
+              in: 'query',
+              required: false,
+              description: 'Дата у форматі YYYY-MM-DD. За замовчуванням — сьогодні',
+              schema: { type: 'string', example: '2026-05-23' },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Матчі отримано з PandaScore',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Матчі отримано з PandaScore' },
+                      count: { type: 'integer', example: 10 },
+                      data: { type: 'array', items: { type: 'object' } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches/archive': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Архів завершених матчів з фільтрами',
+          parameters: [
+            {
+              name: 'teamId',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за командою',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'year',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за роком',
+              schema: { type: 'integer', example: 2024 },
+            },
+            {
+              name: 'tournamentId',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за турніром',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'page',
+              in: 'query',
+              required: false,
+              description: 'Номер сторінки',
+              schema: { type: 'integer', example: 1 },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              required: false,
+              description: 'Кількість записів на сторінці',
+              schema: { type: 'integer', example: 20 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Архів матчів отримано',
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/MatchArchiveResponse' },
+                },
+              },
+            },
+            500: {
+              description: 'Помилка сервера',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+        '/api/tournaments/{id}/bracket': {
+          get: {
+            tags: ['Tournaments'],
+            summary: 'Отримати турнірну сітку',
+            parameters: [
+              {
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'ID турніру',
+                schema: { type: 'integer', example: 1 },
+              },
+            ],
+            responses: {
+              200: {
+                description: 'Турнірну сітку отримано',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        message: { type: 'string', example: 'Турнірну сітку отримано' },
+                        data: {
+                          type: 'object',
+                          properties: {
+                            tournamentId: { type: 'integer', example: 1 },
+                            totalRounds: { type: 'integer', example: 3 },
+                            rounds: {
+                              type: 'object',
+                              additionalProperties: {
+                                type: 'array',
+                                items: {
+                                  type: 'object',
+                                  properties: {
+                                    bracketMatchId: { type: 'integer', example: 1 },
+                                    position: { type: 'integer', example: 1 },
+                                    nextBracketMatchId: {
+                                      type: 'integer',
+                                      nullable: true,
+                                      example: 5,
+                                    },
+                                    match: { type: 'object', nullable: true },
+                                    team1: { type: 'object', nullable: true },
+                                    team2: { type: 'object', nullable: true },
+                                    winner: { type: 'object', nullable: true },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              404: {
+                description: 'Сітку не знайдено',
+                content: {
+                  'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/players/{id}/transfers': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати історію трансферів гравця',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID гравця',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Історію трансферів отримано',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Історію трансферів отримано' },
+                      count: { type: 'integer', example: 2 },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            transferId: { type: 'integer', example: 1 },
+                            transferDate: { type: 'string', format: 'date', example: '2016-08-17' },
+                            transferFee: { type: 'number', nullable: true, example: null },
+                            status: {
+                              type: 'string',
+                              enum: ['confirmed', 'pending', 'cancelled'],
+                              example: 'confirmed',
+                            },
+                            notes: {
+                              type: 'string',
+                              nullable: true,
+                              example: 'Підписання з Natus Vincere',
+                            },
+                            player: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer', example: 1 },
+                                nickname: { type: 'string', example: 's1mple' },
+                                realName: { type: 'string', example: 'Oleksandr Kostyliev' },
+                              },
+                            },
+                            fromTeam: {
+                              type: 'object',
+                              nullable: true,
+                              properties: {
+                                id: { type: 'integer', example: 3 },
+                                name: { type: 'string', example: 'Astralis' },
+                                logo: {
+                                  type: 'string',
+                                  example: 'https://cdn.example.com/astralis.png',
+                                },
+                              },
+                            },
+                            toTeam: {
+                              type: 'object',
+                              nullable: true,
+                              properties: {
+                                id: { type: 'integer', example: 1 },
+                                name: { type: 'string', example: 'Natus Vincere' },
+                                logo: {
+                                  type: 'string',
+                                  example: 'https://cdn.example.com/navi.png',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Історію трансферів не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
           },
         },
       },

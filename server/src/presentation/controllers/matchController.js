@@ -79,3 +79,16 @@ exports.unsubscribe = async (req, res, next) => {
     next(error);
   }
 };
+
+// GET /api/matches/archive?teamId=1&year=2024&tournamentId=1&page=1&limit=20
+exports.getArchive = async (req, res, next) => {
+  try {
+    const result = await matchService.getArchive(req.query);
+    res.status(200).json({
+      message: 'Архів матчів отримано',
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
