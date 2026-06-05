@@ -1,8 +1,185 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { PageLayout } from '../../components/layout/PageLayout';
 import { PageLoader, ErrorState, EmptyState } from '../../components/common/UI';
 import { playerService, countryService } from '../../api/services';
 import { useToast } from '../../context/ToastContext';
+import styles from './Players.module.css';
+
+// ── Transfer History Panel ────────────────────────────────────────────────────
+
+function TransferTimeline({ transfers, loading, error }) {
+  if (loading) {
+    return (
+      <div className={styles.transferLoading}>
+        <span className={styles.transferSpinner} />
+        <span>Завантаження трансферів…</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className={styles.transferError}>{error}</div>;
+  }
+
+  if (!transfers || transfers.length === 0) {
+    return <div className={styles.transferEmpty}>Трансферів не знайдено</div>;
+  }
+
+  return (
+    <div className={styles.timeline}>
+      {transfers.map((t, idx) => {
+        const date = t.transferDate
+          ? new Date(t.transferDate).toLocaleDateString('uk-UA', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })
+          : '—';
+
+        const statusColor =
+          t.status === 'confirmed' ? '#4ade80' : t.status === 'pending' ? '#facc15' : '#888';
+
+        return (
+          <div key={t.transferId ?? idx} className={styles.timelineItem}>
+            {/* Vertical line + dot */}
+            <div className={styles.timelineLine}>
+              <div className={styles.timelineDot} style={{ borderColor: statusColor }} />
+              {idx < transfers.length - 1 && <div className={styles.timelineConnector} />}
+            </div>
+
+            {/* Card */}
+            <div className={styles.transferCard}>
+              <div className={styles.transferDate}>{date}</div>
+
+              <div className={styles.transferTeams}>
+                {/* From */}
+                <div className={styles.transferTeam}>
+                  {t.fromTeam?.logo ? (
+                    <img src={t.fromTeam.logo} alt={t.fromTeam.name} className={styles.teamLogo} />
+                  ) : (
+                    <div className={styles.teamLogoPlaceholder}>?</div>
+                  )}
+                  <span className={styles.teamName}>{t.fromTeam?.name ?? 'Вільний агент'}</span>
+                </div>
+
+                <div className={styles.transferArrow}>
+                  <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+                    <path
+                      d="M0 6H18M18 6L13 1M18 6L13 11"
+                      stroke="#a800ff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+                {/* To */}
+                <div className={styles.transferTeam}>
+                  {t.toTeam?.logo ? (
+                    <img src={t.toTeam.logo} alt={t.toTeam.name} className={styles.teamLogo} />
+                  ) : (
+                    <div className={styles.teamLogoPlaceholder}>?</div>
+                  )}
+                  <span className={styles.teamName}>{t.toTeam?.name ?? 'Вільний агент'}</span>
+                </div>
+              </div>
+
+              {/* Meta row */}
+              <div className={styles.transferMeta}>
+                <span className={styles.transferStatus} style={{ color: statusColor }}>
+                  ●{' '}
+                  {t.status === 'confirmed'
+                    ? 'Підтверджено'
+                    : t.status === 'pending'
+                      ? 'В очікуванні'
+                      : t.status}
+                </span>
+                {t.transferFee != null && (
+                  <span className={styles.transferFee}>
+                    ${Number(t.transferFee).toLocaleString()}
+                  </span>
+                )}
+              </div>
+
+              {t.notes && <p className={styles.transferNotes}>{t.notes}</p>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Transfer Drawer ───────────────────────────────────────────────────────────
+
+function TransferDrawer({ player, onClose }) {
+  const [transfers, setTransfers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!player) return;
+
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setTransfers([]);
+
+    (async () => {
+      try {
+        const res = await playerService.getTransfers(player.player_id);
+        if (!cancelled) {
+          setTransfers(res.data?.data || []);
+        }
+      } catch {
+        if (!cancelled) setError('Не вдалося завантажити трансфери');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [player]);
+
+  if (!player) return null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className={styles.drawerBackdrop} onClick={onClose} />
+
+      {/* Panel */}
+      <aside className={styles.drawer}>
+        <div className={styles.drawerHeader}>
+          <div className={styles.drawerPlayerInfo}>
+            {player.team_logo && (
+              <img src={player.team_logo} alt="" className={styles.drawerAvatar} />
+            )}
+            <div>
+              <div className={styles.drawerNickname}>{player.nickname}</div>
+              <div className={styles.drawerRealName}>{player.real_name}</div>
+            </div>
+          </div>
+          <button className={styles.drawerClose} onClick={onClose} aria-label="Закрити">
+            ✕
+          </button>
+        </div>
+
+        <div className={styles.drawerSection}>
+          <h2 className={styles.drawerSectionTitle}>
+            <span style={{ color: '#a800ff' }}>↔</span> Історія трансферів
+          </h2>
+          <TransferTimeline transfers={transfers} loading={loading} error={error} />
+        </div>
+      </aside>
+    </>
+  );
+}
+
+// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function Players() {
   const { addToast } = useToast();
@@ -12,6 +189,7 @@ export default function Players() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
     const initPage = async () => {
@@ -26,7 +204,7 @@ export default function Players() {
         setCountries(countriesRes.data?.data || []);
       } catch (e) {
         setError('Помилка завантаження даних');
-        addToast('Не вдалося з’єднатися з сервером', 'error');
+        addToast("Не вдалося з'єднатися з сервером", 'error');
       } finally {
         setLoading(false);
       }
@@ -48,6 +226,14 @@ export default function Players() {
     });
   }, [players, selectedCountry, search]);
 
+  const handleRowClick = useCallback((player) => {
+    setSelectedPlayer(player);
+  }, []);
+
+  const handleCloseDrawer = useCallback(() => {
+    setSelectedPlayer(null);
+  }, []);
+
   if (loading)
     return (
       <PageLayout>
@@ -64,6 +250,7 @@ export default function Players() {
   return (
     <PageLayout>
       <div>
+        {/* ── Page header ── */}
         <div
           style={{
             display: 'flex',
@@ -124,6 +311,7 @@ export default function Players() {
           </div>
         </div>
 
+        {/* ── Table ── */}
         <div
           style={{
             background: '#0a0a0a',
@@ -144,17 +332,26 @@ export default function Players() {
                   <th style={{ padding: '12px' }}>Країна</th>
                   <th style={{ padding: '12px' }}>K/D</th>
                   <th style={{ padding: '12px' }}>Rating</th>
+                  <th style={{ padding: '12px' }}></th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPlayers.map((p, idx) => {
                   const kd = (0.8 + Math.random() * 0.7).toFixed(2);
                   const rating = (0.9 + Math.random() * 0.4).toFixed(2);
+                  const isSelected = selectedPlayer?.player_id === p.player_id;
 
                   return (
                     <tr
                       key={p.player_id || idx}
-                      style={{ borderBottom: '1px solid #111', color: '#ccc' }}
+                      className={styles.playerRow}
+                      style={{
+                        borderBottom: '1px solid #111',
+                        color: '#ccc',
+                        background: isSelected ? 'rgba(168,0,255,0.06)' : 'transparent',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleRowClick(p)}
                     >
                       <td style={{ padding: '12px' }}>{idx + 1}</td>
                       <td style={{ padding: '12px' }}>
@@ -189,6 +386,9 @@ export default function Players() {
                           {rating}
                         </span>
                       </td>
+                      <td style={{ padding: '12px' }}>
+                        <span className={styles.transferHint}>↔ Трансфери</span>
+                      </td>
                     </tr>
                   );
                 })}
@@ -197,6 +397,9 @@ export default function Players() {
           )}
         </div>
       </div>
+
+      {/* ── Transfer Drawer ── */}
+      <TransferDrawer player={selectedPlayer} onClose={handleCloseDrawer} />
     </PageLayout>
   );
 }

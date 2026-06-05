@@ -1,12 +1,160 @@
 import React, { useState, useEffect } from 'react';
+import InteractiveMap from './InteractiveMap';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../../components/layout/PageLayout';
-import { PageLoader, ErrorState, EmptyState } from '../../components/common/UI';
+import { PageLoader, ErrorState } from '../../components/common/UI';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { matchService, tournamentService, countryService } from '../../api/services';
-import { usePolling } from '../../hooks/useApi';
 
+// ── Статус-бейдж матчу ────────────────────────────────────────────────────────
+function MatchStatusBadge({ status }) {
+  const cfg = {
+    live: { label: '● LIVE', bg: '#ff0055', color: '#fff' },
+    upcoming: { label: 'НЕЗАБАРОМ', bg: '#1a1a1a', color: '#a800ff' },
+    finished: { label: 'ЗАВЕРШЕНО', bg: '#111', color: '#444' },
+  };
+  const s = cfg[status] || cfg.upcoming;
+  return (
+    <span
+      style={{
+        fontSize: '0.55rem',
+        fontWeight: 900,
+        letterSpacing: '1px',
+        padding: '3px 8px',
+        borderRadius: '20px',
+        background: s.bg,
+        color: s.color,
+      }}
+    >
+      {s.label}
+    </span>
+  );
+}
+
+// ── Картка одного матчу ───────────────────────────────────────────────────────
+function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
+  const t1 =
+    match.team1_name ||
+    (typeof match.team1 === 'object' ? match.team1?.name : match.team1) ||
+    'TBD';
+  const t2 =
+    match.team2_name ||
+    (typeof match.team2 === 'object' ? match.team2?.name : match.team2) ||
+    'TBD';
+  const status = match.status || 'upcoming';
+  const isLive = status === 'live';
+  const isFinished = status === 'finished';
+  const score1 = match.score_team1 ?? match.scoreTeam1;
+  const score2 = match.score_team2 ?? match.scoreTeam2;
+  const showScore = isLive || isFinished;
+  const time = match.start_time
+    ? new Date(match.start_time).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })
+    : null;
+
+  return (
+    <div
+      onClick={onNavigate}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '14px 18px',
+        background: isLive ? 'rgba(255,0,85,0.04)' : '#070707',
+        borderRadius: '12px',
+        border: `1px solid ${isLive ? 'rgba(255,0,85,0.3)' : '#111'}`,
+        cursor: 'pointer',
+        transition: 'border-color 0.2s, background 0.2s',
+        gap: '12px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.borderColor = isLive ? 'rgba(255,0,85,0.6)' : '#a800ff33')
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.borderColor = isLive ? 'rgba(255,0,85,0.3)' : '#111')
+      }
+    >
+      {/* Ліва смужка для live */}
+      {isLive && (
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '3px',
+            background: '#ff0055',
+          }}
+        />
+      )}
+
+      {/* Команда 1 */}
+      <div style={{ flex: 1, textAlign: 'right' }}>
+        <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#eee', marginBottom: '2px' }}>
+          {t1}
+        </div>
+        {time && !showScore && <div style={{ fontSize: '0.6rem', color: '#333' }}>{time}</div>}
+      </div>
+
+      {/* Центр: рахунок або VS + статус */}
+      <div style={{ textAlign: 'center', minWidth: '64px' }}>
+        {showScore ? (
+          <div
+            style={{
+              fontWeight: 900,
+              fontSize: '1.1rem',
+              color: isFinished ? '#555' : '#fff',
+              letterSpacing: '2px',
+            }}
+          >
+            {score1} <span style={{ color: '#222' }}>:</span> {score2}
+          </div>
+        ) : (
+          <div style={{ fontWeight: 900, fontSize: '0.85rem', color: '#a800ff' }}>VS</div>
+        )}
+        <div style={{ marginTop: '4px' }}>
+          <MatchStatusBadge status={status} />
+        </div>
+      </div>
+
+      {/* Команда 2 */}
+      <div style={{ flex: 1, textAlign: 'left' }}>
+        <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#eee', marginBottom: '2px' }}>
+          {t2}
+        </div>
+        {time && !showScore && <div style={{ fontSize: '0.6rem', color: '#333' }}>{time}</div>}
+      </div>
+
+      {/* Дзвіночок */}
+      <button
+        onClick={onReminder}
+        title={isSubbed ? 'Скасувати нагадування' : 'Додати нагадування'}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '4px',
+          flexShrink: 0,
+        }}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill={isSubbed ? '#a800ff' : 'none'}
+          stroke={isSubbed ? '#a800ff' : '#333'}
+          strokeWidth="2.5"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+// ── Головний компонент ────────────────────────────────────────────────────────
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -14,35 +162,54 @@ export default function Dashboard() {
 
   const [search, setSearch] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [sidebarType, setSidebarType] = useState(null); // 'country' або 'tournament'
-
+  const [sidebarType, setSidebarType] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countryTeams, setCountryTeams] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState(null);
-
   const [notifications, setNotifications] = useState([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-
   const [subscriptions, setSubscriptions] = useState({});
   const [tournaments, setTournaments] = useState([]);
 
   const currentUserId = user?.userId || user?.user_id || user?.id;
   const displayName = user?.username || 's1mple';
 
-  const { data: matches, loading, error, refetch } = usePolling(() => matchService.getAll(), 15000);
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Завантаження турнірів для мапи
+  const refetch = () => {
+    setLoading(true);
+    matchService
+      .getAll()
+      .then((r) => {
+        setMatches(r.data?.data || r.data || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
   useEffect(() => {
     tournamentService
       .getForMap()
       .then((r) => {
-        const data = r.data?.data || r.data || [];
+        const raw = r.data;
+        let data = [];
+        if (Array.isArray(raw)) data = raw;
+        else if (Array.isArray(raw?.data)) data = raw.data;
+        else if (Array.isArray(raw?.tournaments)) data = raw.tournaments;
         setTournaments(data);
       })
       .catch((err) => console.error('Tournaments load error:', err));
   }, []);
 
-  // Завантаження підписок користувача
   useEffect(() => {
     if (!currentUserId) return;
     matchService
@@ -67,13 +234,13 @@ export default function Dashboard() {
     try {
       const r = await countryService.getTeamsByCountry(id);
       setCountryTeams(r.data?.data || r.data || []);
-    } catch (err) {
+    } catch {
       addToast('Не вдалося завантажити команди', 'error');
     }
   };
 
   const handleTournamentClick = (e, tournament) => {
-    e.stopPropagation();
+    if (e?.stopPropagation) e.stopPropagation();
     setSidebarType('tournament');
     setSelectedTournament(tournament);
     setSelectedCountry(null);
@@ -82,8 +249,8 @@ export default function Dashboard() {
 
   const getTeamName = (m, n) => {
     if (n === 1)
-      return m.team1_name || (typeof m.team1 === 'object' ? m.team1.name : m.team1) || 'TBD';
-    return m.team2_name || (typeof m.team2 === 'object' ? m.team2.name : m.team2) || 'TBD';
+      return m.team1_name || (typeof m.team1 === 'object' ? m.team1?.name : m.team1) || 'TBD';
+    return m.team2_name || (typeof m.team2 === 'object' ? m.team2?.name : m.team2) || 'TBD';
   };
 
   const handleReminder = async (e, match) => {
@@ -92,10 +259,8 @@ export default function Dashboard() {
       addToast('Будь ласка, увійдіть в акаунт', 'warning');
       return;
     }
-
     const mId = match.matchId || match.match_id || match.id;
     const isSub = !!subscriptions[mId];
-
     try {
       if (isSub) {
         await matchService.unsubscribe(currentUserId, mId);
@@ -108,26 +273,36 @@ export default function Dashboard() {
       } else {
         await matchService.subscribe(currentUserId, mId);
         setSubscriptions((p) => ({ ...p, [mId]: true }));
-
-        const newNotif = {
-          id: Date.now(),
-          message: `Ви підписались на матч ${getTeamName(match, 1)} vs ${getTeamName(match, 2)}`,
-          created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-        setNotifications((prev) => [newNotif, ...prev]);
+        setNotifications((prev) => [
+          {
+            id: Date.now(),
+            message: `Ви підписались на матч ${getTeamName(match, 1)} vs ${getTeamName(match, 2)}`,
+            created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+          ...prev,
+        ]);
         addToast('Ви підписалися на матч!', 'success');
       }
-    } catch (err) {
+    } catch {
       addToast('Помилка підписки', 'error');
     }
   };
 
-  const filteredMatches = (matches || []).filter((m) => {
+  // Топ-5 матчів: спочатку live, потім upcoming, потім finished
+  const allMatches = matches || [];
+  const filteredMatches = allMatches.filter((m) => {
     const t1 = getTeamName(m, 1).toLowerCase();
     const t2 = getTeamName(m, 2).toLowerCase();
     return t1.includes(search.toLowerCase()) || t2.includes(search.toLowerCase());
   });
+  const sortedTop = [...filteredMatches].sort((a, b) => {
+    const order = { live: 0, upcoming: 1, finished: 2 };
+    return (order[a.status] ?? 1) - (order[b.status] ?? 1);
+  });
+  const topMatches = sortedTop.slice(0, 5);
+  const hasMore = filteredMatches.length > 5;
 
+  // Дзвіночок у хедері
   const HeaderNotificationBell = (
     <div
       style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
@@ -165,7 +340,6 @@ export default function Dashboard() {
           {notifications.length}
         </div>
       )}
-
       {isNotifOpen && (
         <div
           style={{
@@ -233,7 +407,7 @@ export default function Dashboard() {
   return (
     <PageLayout customHeaderActions={HeaderNotificationBell}>
       <div style={{ padding: '2rem 0' }}>
-        {/* ХЕДЕР ДЕШБОРДУ ЗГІДНО СКРІНШОТУ */}
+        {/* ПРИВІТАННЯ */}
         <div style={{ marginBottom: '3.5rem' }}>
           <h1
             style={{
@@ -251,28 +425,49 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* ОСНОВНА СІТКА */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '50px' }}>
-          {/* СПИСОК МАТЧІВ */}
+          {/* ── СЕКЦІЯ МАТЧІВ ── */}
           <section>
+            {/* Заголовок секції */}
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '20px',
+                marginBottom: '16px',
               }}
             >
-              <h2
-                style={{
-                  fontSize: '0.75rem',
-                  color: '#444',
-                  fontWeight: 900,
-                  textTransform: 'uppercase',
-                  letterSpacing: '2px',
-                }}
-              >
-                СЬОГОДНІШНІ ІГРИ
-              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <h2
+                  style={{
+                    fontSize: '0.75rem',
+                    color: '#444',
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '2px',
+                    margin: 0,
+                  }}
+                >
+                  МАТЧІ СЬОГОДНІ
+                </h2>
+                {allMatches.some((m) => m.status === 'live') && (
+                  <span
+                    style={{
+                      fontSize: '0.55rem',
+                      fontWeight: 900,
+                      letterSpacing: '1px',
+                      padding: '3px 8px',
+                      borderRadius: '20px',
+                      background: '#ff0055',
+                      color: '#fff',
+                      animation: 'pulse 2s infinite',
+                    }}
+                  >
+                    ● LIVE
+                  </span>
+                )}
+              </div>
               <input
                 type="text"
                 placeholder="ПОШУК..."
@@ -282,97 +477,106 @@ export default function Dashboard() {
                   background: '#0a0a0a',
                   border: '1px solid #1a1a1a',
                   color: '#fff',
-                  padding: '8px 12px',
+                  padding: '7px 12px',
                   borderRadius: '6px',
                   fontSize: '0.7rem',
                   outline: 'none',
+                  width: '120px',
                 }}
               />
             </div>
 
             {error && <ErrorState message={error} onRetry={refetch} />}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {filteredMatches.map((m) => {
+            {/* Список топ-5 матчів */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {topMatches.length === 0 && !loading && (
+                <div
+                  style={{
+                    color: '#333',
+                    fontSize: '0.8rem',
+                    textAlign: 'center',
+                    padding: '30px 0',
+                  }}
+                >
+                  Матчів не знайдено
+                </div>
+              )}
+              {topMatches.map((m) => {
                 const mId = m.matchId || m.match_id || m.id;
-                const isSubbed = !!subscriptions[mId];
                 return (
-                  <div
+                  <MatchCard
                     key={mId}
-                    onClick={() => navigate(`/match/${mId}`)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '1.2rem',
-                      background: '#070707',
-                      borderRadius: '10px',
-                      border: '1px solid #111',
-                      cursor: 'pointer',
-                      transition: '0.2s',
-                    }}
-                  >
-                    <div
-                      style={{
-                        flex: 1,
-                        textAlign: 'right',
-                        fontWeight: 700,
-                        fontSize: '0.85rem',
-                        color: '#eee',
-                      }}
-                    >
-                      {getTeamName(m, 1)}
-                    </div>
-                    <div
-                      style={{
-                        width: '60px',
-                        textAlign: 'center',
-                        color: '#a800ff',
-                        fontWeight: 900,
-                        fontSize: '0.9rem',
-                      }}
-                    >
-                      VS
-                    </div>
-                    <div
-                      style={{
-                        flex: 1,
-                        textAlign: 'left',
-                        fontWeight: 700,
-                        fontSize: '0.85rem',
-                        color: '#eee',
-                      }}
-                    >
-                      {getTeamName(m, 2)}
-                    </div>
-
-                    <button
-                      onClick={(e) => handleReminder(e, m)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginLeft: '15px',
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill={isSubbed ? '#a800ff' : 'none'}
-                        stroke={isSubbed ? '#a800ff' : '#333'}
-                        strokeWidth="2.5"
-                      >
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                      </svg>
-                    </button>
-                  </div>
+                    match={m}
+                    isSubbed={!!subscriptions[mId]}
+                    onNavigate={() => navigate(`/match/${mId}`)}
+                    onReminder={(e) => handleReminder(e, m)}
+                  />
                 );
               })}
             </div>
+
+            {/* Кнопка "Дивитися всі матчі" */}
+            <button
+              onClick={() => navigate('/matches')}
+              style={{
+                marginTop: '16px',
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                border: '1px solid #1a1a1a',
+                borderRadius: '10px',
+                color: '#a800ff',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'border-color 0.2s, background 0.2s',
+                fontFamily: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#a800ff';
+                e.currentTarget.style.background = 'rgba(168,0,255,0.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#1a1a1a';
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
+              </svg>
+              Дивитися всі матчі
+              {hasMore && (
+                <span
+                  style={{
+                    background: '#1a0033',
+                    borderRadius: '10px',
+                    padding: '2px 8px',
+                    fontSize: '0.6rem',
+                    color: '#a800ff',
+                  }}
+                >
+                  +{filteredMatches.length - 5}
+                </span>
+              )}
+            </button>
           </section>
 
-          {/* МАПА */}
+          {/* ── КАРТА ── */}
           <section>
             <h2
               style={{
@@ -418,6 +622,7 @@ export default function Dashboard() {
             transition: '0.6s cubic-bezier(0.19, 1, 0.22, 1)',
             padding: '50px 40px',
             boxShadow: '-20px 0 60px rgba(0,0,0,0.9)',
+            overflowY: 'auto',
           }}
         >
           <div
@@ -474,70 +679,54 @@ export default function Dashboard() {
                 >
                   {selectedTournament.name}
                 </h4>
-                <div
-                  style={{
-                    background: '#0a0a0a',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    border: '1px solid #1a1a1a',
-                  }}
-                >
-                  <span
+                {[
+                  { label: 'ЛОКАЦІЯ', value: selectedTournament.arena || selectedTournament.city },
+                  {
+                    label: 'ДИСЦИПЛІНА',
+                    value: selectedTournament.game,
+                    color: selectedTournament.game === 'CS2' ? '#ff6b35' : '#00e5ff',
+                  },
+                  {
+                    label: 'ПРИЗОВИЙ ФОНД',
+                    value: `$${Number(selectedTournament.prize_pool).toLocaleString()}`,
+                    color: '#a800ff',
+                  },
+                  {
+                    label: 'ДАТИ',
+                    value: `${selectedTournament.start_date} → ${selectedTournament.end_date}`,
+                  },
+                ].map(({ label, value, color }) => (
+                  <div
+                    key={label}
                     style={{
-                      color: '#444',
-                      display: 'block',
-                      fontSize: '0.65rem',
-                      marginBottom: '5px',
+                      background: '#0a0a0a',
+                      padding: '16px 20px',
+                      borderRadius: '8px',
+                      border: '1px solid #1a1a1a',
+                      marginBottom: '10px',
                     }}
                   >
-                    ЛОКАЦІЯ
-                  </span>
-                  <span style={{ fontSize: '1rem' }}>
-                    {selectedTournament.arena || selectedTournament.city}
-                  </span>
-                </div>
+                    <span
+                      style={{
+                        color: '#444',
+                        display: 'block',
+                        fontSize: '0.6rem',
+                        letterSpacing: '1px',
+                        marginBottom: '5px',
+                      }}
+                    >
+                      {label}
+                    </span>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: color || '#eee' }}>
+                      {value}
+                    </span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
       </div>
     </PageLayout>
-  );
-}
-
-function InteractiveMap({ tournaments, onCountryClick, onTournamentClick }) {
-  return (
-    <svg viewBox="0 0 1000 500" style={{ width: '100%', height: 'auto' }}>
-      <style>{`
-        .land { fill: #120326; stroke: #2a0052; stroke-width: 1.5; transition: 0.4s; cursor: pointer; }
-        .land:hover { fill: #1e0540; stroke: #a800ff; }
-        .pin { cursor: pointer; fill: #a800ff; }
-      `}</style>
-      <path
-        className="land"
-        d="M120,80 C180,60 250,50 320,80 C360,100 380,180 340,250 C310,290 220,320 150,280 C100,240 80,150 120,80 Z"
-        onClick={() => onCountryClick(2, 'North America')}
-      />
-      <path
-        className="land"
-        d="M480,80 C550,60 630,70 650,140 C660,190 600,220 520,220 C450,220 440,150 480,80 Z"
-        onClick={() => onCountryClick(1, 'Europe')}
-      />
-      <path
-        className="land"
-        d="M650,70 C750,40 950,60 980,180 C1000,300 850,400 720,380 C650,360 620,250 650,70 Z"
-        onClick={() => onCountryClick(3, 'Asia / CIS')}
-      />
-      {tournaments.map((t) => (
-        <circle
-          key={t.id || t.tournament_id}
-          className="pin"
-          cx={t.longitude || Math.random() * 500 + 200}
-          cy={t.latitude || Math.random() * 300 + 100}
-          r="6"
-          onClick={(e) => onTournamentClick(e, t)}
-        />
-      ))}
-    </svg>
   );
 }

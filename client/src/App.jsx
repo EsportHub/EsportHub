@@ -14,20 +14,72 @@ import Teams from './pages/Teams/Teams';
 import Profile from './pages/Profile/Profile';
 import MatchLiveCenter from './pages/MatchLiveCenter/MatchLiveCenter';
 import Players from './pages/Players/Players';
+import Matches from './pages/Matches/Matches';
+import TournamentBracket from './pages/Tournament/TournamentBracket';
+import NotFound from './pages/NotFound/NotFound';
 
-// Protected route wrapper
+// ── Guards ────────────────────────────────────────────────────────────────────
+
+/**
+ * Захищений маршрут — тільки для авторизованих.
+ * Якщо не авторизований → редірект на /login, зберігаючи поточний шлях у state
+ * щоб після входу можна було повернутись.
+ */
 function PrivateRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  if (loading) return null;
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+
+  if (loading) return null; // Чекаємо відновлення сесії
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
+
+/**
+ * Публічний маршрут — тільки для НЕ авторизованих (login / register).
+ * Якщо вже авторизований → редірект на /dashboard (або попередню сторінку).
+ */
+function PublicRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null;
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
+// ── Routes ────────────────────────────────────────────────────────────────────
 
 function AppRoutes() {
   return (
     <Routes>
+      {/* Кореневий редірект */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/login" element={<SignIn />} />
-      <Route path="/register" element={<SignUp />} />
+
+      {/* Публічні маршрути (тільки для незалогінених) */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <SignIn />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
+        }
+      />
+
+      {/* Захищені маршрути */}
       <Route
         path="/dashboard"
         element={
@@ -68,9 +120,30 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/matches"
+        element={
+          <PrivateRoute>
+            <Matches />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/tournament/:id/bracket"
+        element={
+          <PrivateRoute>
+            <TournamentBracket />
+          </PrivateRoute>
+        }
+      />
+
+      {/* 404 — будь-який невідомий шлях */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
+
+// ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
   return (

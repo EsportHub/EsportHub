@@ -1,5 +1,5 @@
 // src/components/layout/Header.jsx
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -7,9 +7,10 @@ import apiClient from '../../api/apiClient';
 
 const NAV = [
   { to: '/dashboard', label: 'Головна' },
-  { to: '/tournaments', label: 'Турніри' },
+  { to: '/matches', label: 'Матчі' },
   { to: '/teams', label: 'Команди' },
   { to: '/players', label: 'Гравці' },
+  { to: '/tournament/1/bracket', label: 'Сітка' },
 ];
 
 // Debounce hook
@@ -22,7 +23,6 @@ function useDebounce(value, delay) {
   return debounced;
 }
 
-// Category icons
 const CategoryIcon = ({ type }) => {
   if (type === 'team')
     return (
@@ -71,17 +71,8 @@ const CategoryIcon = ({ type }) => {
   return null;
 };
 
-const CATEGORY_LABELS = {
-  team: 'Команди',
-  player: 'Гравці',
-  tournament: 'Турніри',
-};
-
-const CATEGORY_COLORS = {
-  team: '#a800ff',
-  player: '#00c8ff',
-  tournament: '#ffcc00',
-};
+const CATEGORY_LABELS = { team: 'Команди', player: 'Гравці', tournament: 'Турніри' };
+const CATEGORY_COLORS = { team: '#a800ff', player: '#00c8ff', tournament: '#ffcc00' };
 
 export default function Header({ customActions }) {
   const navigate = useNavigate();
@@ -99,18 +90,14 @@ export default function Header({ customActions }) {
   const wrapperRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setIsOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Search
   useEffect(() => {
     if (debouncedQuery.trim().length < 2) {
       setResults({ teams: [], players: [], tournaments: [] });
@@ -140,7 +127,7 @@ export default function Header({ customActions }) {
     setIsOpen(false);
     if (item.type === 'team') navigate(`/teams/${item.id}`);
     else if (item.type === 'player') navigate(`/players/${item.id}`);
-    else if (item.type === 'tournament') navigate(`/tournaments/${item.id}`);
+    else if (item.type === 'tournament') navigate(`/tournament/${item.id}/bracket`);
   };
 
   const handleKeyDown = (e) => {
@@ -150,7 +137,6 @@ export default function Header({ customActions }) {
     }
   };
 
-  // Grouped items
   const groups = [
     { key: 'teams', type: 'team', items: results.teams },
     { key: 'players', type: 'player', items: results.players },
@@ -186,9 +172,9 @@ export default function Header({ customActions }) {
       </div>
 
       {/* Navigation */}
-      <nav style={{ display: 'flex', gap: '2.5rem' }}>
+      <nav style={{ display: 'flex', gap: '2rem' }}>
         {NAV.map(({ to, label }) => {
-          const active = pathname === to;
+          const active = pathname === to || (to !== '/dashboard' && pathname.startsWith(to));
           return (
             <Link
               key={to}
@@ -196,7 +182,7 @@ export default function Header({ customActions }) {
               style={{
                 color: active ? '#a800ff' : 'var(--text, #fff)',
                 textDecoration: 'none',
-                fontSize: '0.95rem',
+                fontSize: '0.9rem',
                 fontWeight: active ? 700 : 500,
                 opacity: active ? 1 : 0.6,
                 position: 'relative',
@@ -242,7 +228,6 @@ export default function Header({ customActions }) {
             boxShadow: focused ? '0 0 0 3px rgba(168,0,255,0.12)' : 'none',
           }}
         >
-          {/* Search icon / spinner */}
           {loading ? (
             <svg
               width="16"
@@ -294,7 +279,6 @@ export default function Header({ customActions }) {
             }}
           />
 
-          {/* Clear button */}
           {query && (
             <button
               onClick={() => {
@@ -351,19 +335,13 @@ export default function Header({ customActions }) {
           >
             {totalResults === 0 && !loading ? (
               <div
-                style={{
-                  padding: '20px',
-                  textAlign: 'center',
-                  color: '#444',
-                  fontSize: '0.82rem',
-                }}
+                style={{ padding: '20px', textAlign: 'center', color: '#444', fontSize: '0.82rem' }}
               >
                 Нічого не знайдено за «{query}»
               </div>
             ) : (
               groups.map((group) => (
                 <div key={group.key}>
-                  {/* Category header */}
                   <div
                     style={{
                       display: 'flex',
@@ -394,7 +372,6 @@ export default function Header({ customActions }) {
                     </span>
                   </div>
 
-                  {/* Items */}
                   {group.items.map((item) => (
                     <div
                       key={`${group.type}-${item.id}`}
@@ -412,7 +389,6 @@ export default function Header({ customActions }) {
                       }
                       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                     >
-                      {/* Avatar */}
                       <div
                         style={{
                           width: 30,
@@ -444,7 +420,6 @@ export default function Header({ customActions }) {
                         )}
                       </div>
 
-                      {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
@@ -465,7 +440,6 @@ export default function Header({ customActions }) {
                         )}
                       </div>
 
-                      {/* Arrow */}
                       <svg
                         width="12"
                         height="12"
@@ -482,7 +456,6 @@ export default function Header({ customActions }) {
               ))
             )}
 
-            {/* Footer hint */}
             <div
               style={{
                 padding: '8px 14px',
@@ -512,9 +485,8 @@ export default function Header({ customActions }) {
         )}
       </div>
 
-      {/* Action Area */}
+      {/* Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', flexShrink: 0 }}>
-        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           style={{
@@ -570,10 +542,8 @@ export default function Header({ customActions }) {
           )}
         </button>
 
-        {/* Custom actions slot (e.g. notification bell from Dashboard) */}
         {customActions}
 
-        {/* Profile Avatar */}
         <div
           onClick={() => navigate('/profile')}
           style={{ cursor: 'pointer', transition: '0.3s transform' }}

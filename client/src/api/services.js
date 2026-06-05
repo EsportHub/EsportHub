@@ -19,17 +19,16 @@ export const teamService = {
 export const matchService = {
   getAll: () => apiClient.get('/matches'),
   getById: (id) => apiClient.get(`/matches/${id}`),
+  getArchive: (params) => apiClient.get('/matches/archive', { params }),
 
   getSubscriptions: (userId) => apiClient.get(`matches/subscriptions/${userId}`),
 
-  // 🔥 Повертаємо user_id та match_id (як очікує бекенд)
   subscribe: (userId, matchId) =>
     apiClient.post('matches/subscriptions', {
       user_id: userId,
       match_id: matchId,
     }),
 
-  // 🔥 Повертаємо user_id та match_id
   unsubscribe: (userId, matchId) =>
     apiClient.delete('matches/subscriptions', {
       data: {
@@ -54,10 +53,10 @@ export const countryService = {
 export const playerService = {
   getAll: () => apiClient.get('/players'),
   getById: (id) => apiClient.get(`/players/${id}`),
+  getTransfers: (id) => apiClient.get(`/players/${id}/transfers`),
 };
 
 export const favoriteService = {
-  // 🔥 Повертаємо user_id та team_id
   addTeam: (userId, teamId) =>
     apiClient.post('/users/favorites/teams', {
       user_id: userId,

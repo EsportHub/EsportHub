@@ -1,6 +1,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService, userService } from '../api/services';
+import { TOKEN_KEY, USER_ID_KEY, USER_NAME_KEY } from '../api/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -9,22 +10,27 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Функція для збереження даних у браузері
+  // Зберігаємо дані сесії у localStorage
   const _persist = (tok, id, name) => {
-    localStorage.setItem('refresh-token', tok);
-    localStorage.setItem('userId', String(id));
-    localStorage.setItem('userName', name);
+    localStorage.setItem(TOKEN_KEY, tok);
+    localStorage.setItem(USER_ID_KEY, String(id));
+    localStorage.setItem(USER_NAME_KEY, name);
   };
 
+  // Очищуємо сесію
+  const _clear = () => {
+    [TOKEN_KEY, USER_ID_KEY, USER_NAME_KEY].forEach((k) => localStorage.removeItem(k));
+  };
+
+  // Відновлення сесії при оновленні сторінки
   useEffect(() => {
-    // Відновлення сесії при оновленні сторінки
-    const storedToken = localStorage.getItem('refresh-token');
-    const storedId = localStorage.getItem('userId');
-    const storedName = localStorage.getItem('userName');
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const storedId = localStorage.getItem(USER_ID_KEY);
+    const storedName = localStorage.getItem(USER_NAME_KEY);
 
     if (storedToken && storedId && storedId !== 'undefined') {
       setToken(storedToken);
-      // Тимчасово ставимо дані з localStorage
+      // Тимчасово ставимо дані з localStorage поки завантажуємо профіль
       setUser({
         user_id: storedId,
         id: storedId,
@@ -47,43 +53,45 @@ export function AuthProvider({ children }) {
           });
         })
         .catch(() => {
-          // Якщо токен невалідний — виходимо
-          logout();
+          // Токен невалідний — виходимо
+          _clear();
+          setToken(null);
+          setUser(null);
         })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
 
+    // Слухаємо подію виходу від apiClient (401)
     const onLogout = () => logout();
     window.addEventListener('auth:logout', onLogout);
     return () => window.removeEventListener('auth:logout', onLogout);
-  }, []);
+  }, []); // eslint-disable-line
 
   const login = useCallback(async (creds) => {
     const res = await authService.login(creds);
-    const d = res.data; // Згідно з твоїм JSON, дані на верхньому рівні res.data
+    const d = res.data;
 
-    // 1. Дістаємо токен
-    const tok = d.token || d.refresh_token || d.access_token || '';
-
-    // 2. Дістаємо ID (у тебе це d.user.userId)
-    const id = String(d.user?.userId || d.userId || d.user_id || d.id || '');
+    const tok = d.token || d.access_token || d.refresh_token || '';
+    const id = String(d.user?.userId || d.user?.user_id || d.userId || d.user_id || d.id || '');
     const name = d.user?.username || d.username || creds.email.split('@')[0];
 
-    if (tok && id && id !== 'undefined') {
-      _persist(tok, id, name);
-      setToken(tok);
-      setUser({
-        user_id: id,
-        id: id,
-        userId: id,
-        username: name,
-        email: d.user?.email || creds.email,
-      });
-    } else {
-      console.error('Помилка: Не вдалося отримати токен або ID користувача', d);
+    if (!tok || !id || id === 'undefined') {
+      console.error('Помилка: не вдалося отримати токен або ID', d);
+      throw new Error('Невірна відповідь сервера');
     }
+
+    _persist(tok, id, name);
+    setToken(tok);
+    setUser({
+      user_id: id,
+      id,
+      userId: id,
+      username: name,
+      email: d.user?.email || creds.email,
+    });
+
     return d;
   }, []);
 
@@ -91,8 +99,8 @@ export function AuthProvider({ children }) {
     const res = await authService.register(form);
     const d = res.data?.data || res.data;
 
-    const tok = d.token || d.refresh_token || d.access_token || '';
-    const id = String(d.user?.userId || d.userId || d.user_id || d.id || '');
+    const tok = d.token || d.access_token || d.refresh_token || '';
+    const id = String(d.user?.userId || d.user?.user_id || d.userId || d.user_id || d.id || '');
     const name = d.user?.username || d.username || form.username || form.firstName;
 
     if (tok && id && id !== 'undefined') {
@@ -100,17 +108,18 @@ export function AuthProvider({ children }) {
       setToken(tok);
       setUser({
         user_id: id,
-        id: id,
+        id,
         userId: id,
         username: name,
         email: form.email,
       });
     }
+
     return d;
   }, []);
 
   const logout = useCallback(() => {
-    ['refresh-token', 'userId', 'userName'].forEach((k) => localStorage.removeItem(k));
+    _clear();
     setToken(null);
     setUser(null);
   }, []);
@@ -119,7 +128,7 @@ export function AuthProvider({ children }) {
     setUser((p) => {
       if (!p) return null;
       const next = { ...p, ...patch };
-      if (patch.username) localStorage.setItem('userName', patch.username);
+      if (patch.username) localStorage.setItem(USER_NAME_KEY, patch.username);
       return next;
     });
   }, []);
