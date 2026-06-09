@@ -703,7 +703,16 @@ const options = {
       '/api/players': {
         get: {
           tags: ['Players'],
-          summary: 'Отримати список всіх гравців',
+          summary: 'Отримати список гравців',
+          parameters: [
+            {
+              name: 'country_id',
+              in: 'query',
+              required: false,
+              description: 'Фільтр за країною (ID країни). Якщо не вказано — повертає всіх гравців',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
           responses: {
             200: {
               description: 'Список гравців успішно отримано',
@@ -711,6 +720,12 @@ const options = {
                 'application/json': {
                   schema: { $ref: '#/components/schemas/PlayersListResponse' },
                 },
+              },
+            },
+            404: {
+              description: 'Гравців з цієї країни не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },
             },
           },

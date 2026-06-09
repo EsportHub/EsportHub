@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const playerStatsController = require('../controllers/playerStatsController');
 
-router.get('/', playerStatsController.getAllPlayers);
+router.get('/', playerStatsController.getPlayersByCountry);
 router.get('/:id', playerStatsController.getPlayerById);
 
 // GET /api/players/stats

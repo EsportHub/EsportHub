@@ -17,6 +17,17 @@ class PlayerService {
     }
     return player;
   }
+
+  async getPlayersByCountry(countryId) {
+    const players = await playerRepository.findByCountry(countryId);
+    if (!players.length) {
+      const error = new Error('Гравців з цієї країни не знайдено');
+      error.statusCode = 404;
+      error.errorCode = 'NOT_FOUND';
+      throw error;
+    }
+    return players;
+  }
 }
 
 module.exports = new PlayerService();
