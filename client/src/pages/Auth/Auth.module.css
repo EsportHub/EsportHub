@@ -1,0 +1,17 @@
+/* src/pages/Auth/Auth.module.css */
+.container { display: flex; min-height: 100vh; background: #000; }
+.imageSide { flex: 1; position: relative; display: none; background: url('../../img/auth-bg.jpg') center/cover; }
+@media (min-width: 768px) { .imageSide { display: block; } }
+.formSide { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; background: #000; }
+.formContainer { width: 100%; max-width: 420px; }
+.title { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 2.5rem; }
+.form { display: flex; flex-direction: column; gap: 1.1rem; }
+.inputRow { display: flex; gap: 1.5rem; }
+.inputRow > * { flex: 1; }
+.divider { width: 100%; height: 1px; background: #333; margin: 1rem 0; }
+.socialButtons { display: flex; gap: 1rem; }
+.socialButton { flex: 1; padding: .75rem; background: transparent; border: 1px solid #a800ff; border-radius: 6px; color: #a800ff; font-size: .8rem; cursor: pointer; transition: all .2s; }
+.socialButton:hover { background: rgba(168,0,255,.1); }
+.footerText { margin-top: 1.5rem; font-size: .8rem; color: #888; }
+.footerLink { color: #a800ff; font-weight: 700; cursor: pointer; }
+.footerLink:hover { text-shadow: 0 0 10px rgba(168,0,255,.6); }

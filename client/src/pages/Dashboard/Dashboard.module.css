@@ -1,0 +1,130 @@
+.dashboard {
+  background-color: #000;
+  color: #fff;
+  min-height: 100vh;
+  padding: 0 8%;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 0;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #bc33ff; /* Яскравий фіолетовий */
+  cursor: pointer;
+}
+
+.nav { display: flex; gap: 2.5rem; }
+.nav a { color: #fff; text-decoration: none; font-size: 0.85rem; opacity: 0.8; }
+.activeLink { color: #bc33ff !important; opacity: 1 !important; }
+
+.headerIcons { display: flex; align-items: center; gap: 1.5rem; }
+.iconBtn { background: none; border: none; cursor: pointer; opacity: 0.8; }
+.avatarCircle {
+  width: 35px; height: 35px; background: #333; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+  border: 1px solid #bc33ff;
+}
+
+/* Welcome Area */
+.welcomeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0 4rem;
+}
+
+.welcomeTitle h1 { font-size: 2rem; font-weight: 700; margin: 0; }
+.welcomeTitle h1 span { color: #bc33ff; }
+.welcomeTitle p { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
+
+.controls { display: flex; gap: 1rem; }
+.searchBox {
+  position: relative;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 8px;
+  display: flex; align-items: center;
+  padding: 0 1rem;
+}
+.searchBox input {
+  background: transparent; border: none; color: #fff; padding: 0.6rem 0; width: 180px; outline: none; font-size: 0.8rem;
+}
+
+.filterBtn {
+  background: #000; border: 1px solid #333; border-radius: 8px;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+
+/* Content Grid */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 10%;
+}
+
+.sectionTitle { font-size: 1rem; font-weight: 600; margin-bottom: 2rem; }
+
+/* Match Card Style */
+.matchRow {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid #222;
+  transition: 0.3s;
+}
+
+.matchRow:hover { border-bottom-color: #bc33ff; }
+
+.teamLogo {
+  width: 45px; height: 45px; background: #1a1a1a; border-radius: 50%;
+  background-size: cover; border: 1px solid #333;
+}
+
+.matchInfo { flex: 1; text-align: center; }
+.matchTime { font-size: 1.2rem; font-weight: 800; }
+.matchTeamsNames { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+.vsText { color: #bc33ff; margin: 0 4px; }
+
+.matchChevron { color: #444; margin-left: 1rem; font-size: 0.9rem; }
+
+/* Map Placeholder */
+.mapSection { width: 100%; }
+.mapContainer {
+  height: 400px; background: #000; border-radius: 20px;
+}
+
+/* Footer */
+.footer {
+  margin-top: 6rem; padding: 2rem 0; border-top: 1px solid #111;
+  display: flex; justify-content: space-between; color: #444; font-size: 0.75rem;
+}
+.footer a { color: #444; text-decoration: none; margin: 0 5px; }
+/* ── React-Leaflet popup overrides ── */
+.atlas-popup .leaflet-popup-content-wrapper {
+  background: #0a0a0a;
+  border: 1px solid #1a0033;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(168, 0, 255, 0.2);
+  color: #eee;
+  font-family: 'Inter', sans-serif;
+  padding: 0;
+}
+.atlas-popup .leaflet-popup-content {
+  margin: 0;
+}
+.atlas-popup .leaflet-popup-tip {
+  background: #1a0033;
+}
+.atlas-popup .leaflet-popup-close-button {
+  color: #444 !important;
+  font-size: 1rem !important;
+  top: 8px !important;
+  right: 10px !important;
+}

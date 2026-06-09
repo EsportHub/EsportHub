@@ -4,6 +4,13 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
   async up(queryInterface) {
+    // Якщо дані вже є — пропускаємо
+    const [rows] = await queryInterface.sequelize.query('SELECT 1 FROM country LIMIT 1');
+    if (rows.length > 0) {
+      console.log('Seeds already applied, skipping.');
+      return;
+    }
+
     console.log('Inserting data...');
 
     // COUNTRY
