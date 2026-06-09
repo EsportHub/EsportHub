@@ -991,52 +991,52 @@ const options = {
             },
           },
         },
-        '/api/tournaments/{id}/bracket': {
-          get: {
-            tags: ['Tournaments'],
-            summary: 'Отримати турнірну сітку',
-            parameters: [
-              {
-                name: 'id',
-                in: 'path',
-                required: true,
-                description: 'ID турніру',
-                schema: { type: 'integer', example: 1 },
-              },
-            ],
-            responses: {
-              200: {
-                description: 'Турнірну сітку отримано',
-                content: {
-                  'application/json': {
-                    schema: {
-                      type: 'object',
-                      properties: {
-                        message: { type: 'string', example: 'Турнірну сітку отримано' },
-                        data: {
-                          type: 'object',
-                          properties: {
-                            tournamentId: { type: 'integer', example: 1 },
-                            totalRounds: { type: 'integer', example: 3 },
-                            rounds: {
-                              type: 'object',
-                              additionalProperties: {
-                                type: 'array',
-                                items: {
-                                  type: 'object',
-                                  properties: {
-                                    bracketMatchId: { type: 'integer', example: 1 },
-                                    position: { type: 'integer', example: 1 },
-                                    nextBracketMatchId: {
-                                      type: 'integer',
-                                      nullable: true,
-                                      example: 5,
-                                    },
-                                    match: { type: 'object', nullable: true },
-                                    team1: { type: 'object', nullable: true },
-                                    team2: { type: 'object', nullable: true },
-                                    winner: { type: 'object', nullable: true },
+      },
+      '/api/tournaments/{id}/bracket': {
+        get: {
+          tags: ['Tournaments'],
+          summary: 'Отримати турнірну сітку',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              description: 'ID турніру',
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Турнірну сітку отримано',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Турнірну сітку отримано' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          tournamentId: { type: 'integer', example: 1 },
+                          totalRounds: { type: 'integer', example: 3 },
+                          rounds: {
+                            type: 'object',
+                            additionalProperties: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  bracketMatchId: { type: 'integer', example: 1 },
+                                  position: { type: 'integer', example: 1 },
+                                  nextBracketMatchId: {
+                                    type: 'integer',
+                                    nullable: true,
+                                    example: 5,
                                   },
+                                  match: { type: 'object', nullable: true },
+                                  team1: { type: 'object', nullable: true },
+                                  team2: { type: 'object', nullable: true },
+                                  winner: { type: 'object', nullable: true },
                                 },
                               },
                             },
@@ -1047,11 +1047,11 @@ const options = {
                   },
                 },
               },
-              404: {
-                description: 'Сітку не знайдено',
-                content: {
-                  'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
-                },
+            },
+            404: {
+              description: 'Сітку не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },
             },
           },
@@ -1140,6 +1140,125 @@ const options = {
             },
             404: {
               description: 'Історію трансферів не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати список всіх матчів',
+          responses: {
+            200: { description: 'Список матчів отримано' },
+          },
+        },
+      },
+      '/api/matches/live': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати поточні live матчі',
+          responses: {
+            200: { description: 'Live матчі отримано' },
+          },
+        },
+      },
+      '/api/matches/{matchId}/score': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати рахунок матчу',
+          parameters: [
+            {
+              name: 'matchId',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Рахунок матчу отримано' },
+            404: {
+              description: 'Матч не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/matches/{matchId}/pickban': {
+        get: {
+          tags: ['Matches'],
+          summary: 'Отримати pick/ban карт матчу',
+          parameters: [
+            {
+              name: 'matchId',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Pick/ban отримано' },
+            404: {
+              description: 'Матч не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/players/stats': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати статистику всіх гравців',
+          responses: {
+            200: { description: 'Статистика гравців отримана' },
+          },
+        },
+      },
+      '/api/players/{id}/stats': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати статистику гравця за ID',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Статистику гравця отримано' },
+            404: {
+              description: 'Гравця не знайдено',
+              content: {
+                'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
+              },
+            },
+          },
+        },
+      },
+      '/api/players/{id}/stats/matches': {
+        get: {
+          tags: ['Players'],
+          summary: 'Отримати статистику гравця по матчах',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer', example: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Статистику по матчах отримано' },
+            404: {
+              description: 'Гравця не знайдено',
               content: {
                 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } },
               },
