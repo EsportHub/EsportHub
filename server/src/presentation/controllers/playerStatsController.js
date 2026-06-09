@@ -75,3 +75,26 @@ exports.getPlayerTransfers = async (req, res, next) => {
     next(error);
   }
 };
+
+// GET /api/players?country_id=1
+exports.getPlayersByCountry = async (req, res, next) => {
+  try {
+    const { country_id } = req.query;
+    if (country_id) {
+      const players = await playerService.getPlayersByCountry(country_id);
+      return res.status(200).json({
+        message: 'Гравців за країною отримано',
+        count: players.length,
+        data: players,
+      });
+    }
+    const players = await playerService.getAllPlayers();
+    return res.status(200).json({
+      message: 'Список гравців успішно отримано',
+      count: players.length,
+      data: players,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
