@@ -5,8 +5,6 @@ import { playerService, countryService } from '../../api/services';
 import { useToast } from '../../context/ToastContext';
 import styles from './Players.module.css';
 
-// ── Transfer History Panel ────────────────────────────────────────────────────
-
 function TransferTimeline({ transfers, loading, error }) {
   if (loading) {
     return (
@@ -41,18 +39,18 @@ function TransferTimeline({ transfers, loading, error }) {
 
         return (
           <div key={t.transferId ?? idx} className={styles.timelineItem}>
-            {/* Vertical line + dot */}
+            {}
             <div className={styles.timelineLine}>
               <div className={styles.timelineDot} style={{ borderColor: statusColor }} />
               {idx < transfers.length - 1 && <div className={styles.timelineConnector} />}
             </div>
 
-            {/* Card */}
+            {}
             <div className={styles.transferCard}>
               <div className={styles.transferDate}>{date}</div>
 
               <div className={styles.transferTeams}>
-                {/* From */}
+                {}
                 <div className={styles.transferTeam}>
                   {t.fromTeam?.logo ? (
                     <img src={t.fromTeam.logo} alt={t.fromTeam.name} className={styles.teamLogo} />
@@ -74,7 +72,7 @@ function TransferTimeline({ transfers, loading, error }) {
                   </svg>
                 </div>
 
-                {/* To */}
+                {}
                 <div className={styles.transferTeam}>
                   {t.toTeam?.logo ? (
                     <img src={t.toTeam.logo} alt={t.toTeam.name} className={styles.teamLogo} />
@@ -85,7 +83,7 @@ function TransferTimeline({ transfers, loading, error }) {
                 </div>
               </div>
 
-              {/* Meta row */}
+              {}
               <div className={styles.transferMeta}>
                 <span className={styles.transferStatus} style={{ color: statusColor }}>
                   ●{' '}
@@ -111,15 +109,15 @@ function TransferTimeline({ transfers, loading, error }) {
   );
 }
 
-// ── Transfer Drawer ───────────────────────────────────────────────────────────
-
 function TransferDrawer({ player, onClose }) {
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const playerId = player?.player_id ?? player?.id ?? null;
+
   useEffect(() => {
-    if (!player) return;
+    if (!playerId) return;
 
     let cancelled = false;
     setLoading(true);
@@ -128,7 +126,7 @@ function TransferDrawer({ player, onClose }) {
 
     (async () => {
       try {
-        const res = await playerService.getTransfers(player.player_id);
+        const res = await playerService.getTransfers(playerId);
         if (!cancelled) {
           setTransfers(res.data?.data || []);
         }
@@ -142,16 +140,16 @@ function TransferDrawer({ player, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [player]);
+  }, [playerId]);
 
   if (!player) return null;
 
   return (
     <>
-      {/* Backdrop */}
+      {}
       <div className={styles.drawerBackdrop} onClick={onClose} />
 
-      {/* Panel */}
+      {}
       <aside className={styles.drawer}>
         <div className={styles.drawerHeader}>
           <div className={styles.drawerPlayerInfo}>
@@ -178,8 +176,6 @@ function TransferDrawer({ player, onClose }) {
     </>
   );
 }
-
-// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function Players() {
   const { addToast } = useToast();
@@ -249,9 +245,23 @@ export default function Players() {
 
   return (
     <PageLayout>
-      <div>
-        {/* ── Page header ── */}
+      <style>{`
+        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @media (max-width: 768px) {
+          .players-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+          .players-controls { flex-direction: column !important; width: 100% !important; }
+          .players-controls select, .players-controls input { width: 100% !important; }
+          .players-table th:nth-child(4), .players-table td:nth-child(4),
+          .players-table th:nth-child(5), .players-table td:nth-child(5) { display: none; }
+        }
+        @media (max-width: 480px) {
+          .players-table th:nth-child(6), .players-table td:nth-child(6) { display: none; }
+        }
+      `}</style>
+      <div style={{ animation: 'fadeUp 0.4s ease both' }}>
+        {}
         <div
+          className="players-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -262,7 +272,7 @@ export default function Players() {
           <div>
             <h1
               style={{
-                fontSize: '2.5rem',
+                fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
                 fontWeight: 900,
                 margin: 0,
                 textTransform: 'uppercase',
@@ -274,7 +284,7 @@ export default function Players() {
             <p style={{ color: '#666' }}>Аналітика та пошук талантів</p>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="players-controls" style={{ display: 'flex', gap: '12px' }}>
             <select
               value={selectedCountry}
               onChange={(e) => setSelectedCountry(e.target.value)}
@@ -311,7 +321,7 @@ export default function Players() {
           </div>
         </div>
 
-        {/* ── Table ── */}
+        {}
         <div
           style={{
             background: '#0a0a0a',
@@ -323,7 +333,7 @@ export default function Players() {
           {filteredPlayers.length === 0 ? (
             <EmptyState message="Гравців не знайдено" />
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="players-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ textAlign: 'left', color: '#555', borderBottom: '1px solid #1a1a1a' }}>
                   <th style={{ padding: '12px' }}>#</th>
@@ -398,7 +408,7 @@ export default function Players() {
         </div>
       </div>
 
-      {/* ── Transfer Drawer ── */}
+      {}
       <TransferDrawer player={selectedPlayer} onClose={handleCloseDrawer} />
     </PageLayout>
   );

@@ -1,6 +1,4 @@
 // src/components/common/UI.jsx
-// Spinner, PageLoader, EmptyState, ErrorState, FormField, TextInput, SubmitButton
-
 import React from 'react';
 
 export function Spinner({ size = 32, color = '#a800ff' }) {
@@ -34,12 +32,12 @@ export function PageLoader() {
       }}
     >
       <Spinner size={48} />
-      <span style={{ fontSize: '0.85rem' }}>Завантаження...</span>
+      <span style={{ fontSize: '0.85rem' }}>Loading...</span>
     </div>
   );
 }
 
-export function EmptyState({ message = 'Нічого не знайдено' }) {
+export function EmptyState({ message = 'Nothing found' }) {
   return (
     <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#444' }}>
       <svg
@@ -88,7 +86,7 @@ export function ErrorState({ message, onRetry }) {
             cursor: 'pointer',
           }}
         >
-          Спробувати знову
+          Try again
         </button>
       )}
     </div>
@@ -185,7 +183,7 @@ export function SubmitButton({ children, loading, style = {}, ...props }) {
       }}
     >
       {loading && <Spinner size={16} color="#fff" />}
-      {loading ? 'Завантаження...' : children}
+      {loading ? 'Loading...' : children}
     </button>
   );
 }
@@ -194,7 +192,7 @@ export function ThemeToggle({ theme, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      title={theme === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему'}
+      title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
       style={{
         background: 'none',
         border: '1px solid #333',

@@ -7,7 +7,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { matchService, tournamentService, countryService } from '../../api/services';
 
-// ── Статус-бейдж матчу ────────────────────────────────────────────────────────
 function MatchStatusBadge({ status }) {
   const cfg = {
     live: { label: '● LIVE', bg: '#ff0055', color: '#fff' },
@@ -32,7 +31,6 @@ function MatchStatusBadge({ status }) {
   );
 }
 
-// ── Картка одного матчу ───────────────────────────────────────────────────────
 function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
   const t1 =
     match.team1_name ||
@@ -75,7 +73,7 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
         (e.currentTarget.style.borderColor = isLive ? 'rgba(255,0,85,0.3)' : '#111')
       }
     >
-      {/* Ліва смужка для live */}
+      {}
       {isLive && (
         <div
           style={{
@@ -89,7 +87,7 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
         />
       )}
 
-      {/* Команда 1 */}
+      {}
       <div style={{ flex: 1, textAlign: 'right' }}>
         <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#eee', marginBottom: '2px' }}>
           {t1}
@@ -97,7 +95,7 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
         {time && !showScore && <div style={{ fontSize: '0.6rem', color: '#333' }}>{time}</div>}
       </div>
 
-      {/* Центр: рахунок або VS + статус */}
+      {}
       <div style={{ textAlign: 'center', minWidth: '64px' }}>
         {showScore ? (
           <div
@@ -118,7 +116,7 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
         </div>
       </div>
 
-      {/* Команда 2 */}
+      {}
       <div style={{ flex: 1, textAlign: 'left' }}>
         <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#eee', marginBottom: '2px' }}>
           {t2}
@@ -126,7 +124,7 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
         {time && !showScore && <div style={{ fontSize: '0.6rem', color: '#333' }}>{time}</div>}
       </div>
 
-      {/* Дзвіночок */}
+      {}
       <button
         onClick={onReminder}
         title={isSubbed ? 'Скасувати нагадування' : 'Додати нагадування'}
@@ -154,7 +152,6 @@ function MatchCard({ match, isSubbed, onNavigate, onReminder }) {
   );
 }
 
-// ── Головний компонент ────────────────────────────────────────────────────────
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -288,7 +285,6 @@ export default function Dashboard() {
     }
   };
 
-  // Топ-5 матчів: спочатку live, потім upcoming, потім finished
   const allMatches = matches || [];
   const filteredMatches = allMatches.filter((m) => {
     const t1 = getTeamName(m, 1).toLowerCase();
@@ -302,7 +298,6 @@ export default function Dashboard() {
   const topMatches = sortedTop.slice(0, 5);
   const hasMore = filteredMatches.length > 5;
 
-  // Дзвіночок у хедері
   const HeaderNotificationBell = (
     <div
       style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
@@ -407,7 +402,7 @@ export default function Dashboard() {
   return (
     <PageLayout customHeaderActions={HeaderNotificationBell}>
       <div style={{ padding: '2rem 0' }}>
-        {/* ПРИВІТАННЯ */}
+        {}
         <div style={{ marginBottom: '3.5rem' }}>
           <h1
             style={{
@@ -425,11 +420,11 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* ОСНОВНА СІТКА */}
+        {}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '50px' }}>
-          {/* ── СЕКЦІЯ МАТЧІВ ── */}
+          {}
           <section>
-            {/* Заголовок секції */}
+            {}
             <div
               style={{
                 display: 'flex',
@@ -488,7 +483,7 @@ export default function Dashboard() {
 
             {error && <ErrorState message={error} onRetry={refetch} />}
 
-            {/* Список топ-5 матчів */}
+            {}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {topMatches.length === 0 && !loading && (
                 <div
@@ -516,7 +511,7 @@ export default function Dashboard() {
               })}
             </div>
 
-            {/* Кнопка "Дивитися всі матчі" */}
+            {}
             <button
               onClick={() => navigate('/matches')}
               style={{
@@ -576,7 +571,7 @@ export default function Dashboard() {
             </button>
           </section>
 
-          {/* ── КАРТА ── */}
+          {}
           <section>
             <h2
               style={{
@@ -608,7 +603,7 @@ export default function Dashboard() {
           </section>
         </div>
 
-        {/* САЙДБАР */}
+        {}
         <div
           style={{
             position: 'fixed',

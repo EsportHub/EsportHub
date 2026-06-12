@@ -1,4 +1,3 @@
-// src/pages/Auth/SignUp.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -41,20 +40,17 @@ export default function SignUp() {
 
     setLoading(true);
     try {
-      // 1. Готуємо дані суворо під формат бекенду (Swagger)
       const requestData = {
         username: `${form.firstName} ${form.lastName}`.trim(),
         email: form.email,
         password: form.password,
       };
 
-      // 2. Відправляємо саме requestData, а не весь state форми
       await register(requestData);
 
       addToast('Акаунт успішно створено!', 'success');
       setTimeout(() => navigate('/dashboard'), 800);
     } catch (err) {
-      // Якщо сервер повернув помилку валідації (наприклад, про username)
       const msg = err.userMessage || 'Помилка реєстрації';
 
       if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('exist')) {

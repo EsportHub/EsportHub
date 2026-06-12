@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { PageLayout } from '../../components/layout/PageLayout';
 
-// ── Мок дані турнірної сітки ──────────────────────────────────────────────────
 const TOURNAMENT = {
   name: 'PGL Major Copenhagen 2024',
   game: 'CS2',
@@ -100,7 +99,6 @@ const BRACKET = {
   },
 };
 
-// ── Картка матчу ──────────────────────────────────────────────────────────────
 function MatchCard({ match, isHighlighted, onClick }) {
   const [hovered, setHovered] = useState(false);
   const isUpcoming = match.status === 'upcoming';
@@ -119,7 +117,7 @@ function MatchCard({ match, isHighlighted, onClick }) {
         opacity: !isWinner && !isUpcoming ? 0.4 : 1,
       }}
     >
-      {/* Лого або заглушка */}
+      {}
       <div style={{ width: '22px', height: '22px', flexShrink: 0 }}>
         {team.logo ? (
           <img
@@ -203,7 +201,6 @@ function MatchCard({ match, isHighlighted, onClick }) {
   );
 }
 
-// ── Колонка раунду ────────────────────────────────────────────────────────────
 function RoundColumn({ title, matches, selectedId, onSelect, isFinal }) {
   return (
     <div
@@ -215,7 +212,7 @@ function RoundColumn({ title, matches, selectedId, onSelect, isFinal }) {
         minWidth: isFinal ? '200px' : '190px',
       }}
     >
-      {/* Заголовок раунду */}
+      {}
       <div
         style={{
           fontSize: '0.6rem',
@@ -233,7 +230,7 @@ function RoundColumn({ title, matches, selectedId, onSelect, isFinal }) {
         {title}
       </div>
 
-      {/* Матчі */}
+      {}
       <div
         style={{
           display: 'flex',
@@ -257,7 +254,6 @@ function RoundColumn({ title, matches, selectedId, onSelect, isFinal }) {
   );
 }
 
-// ── Коннектор між раундами ────────────────────────────────────────────────────
 function Connector() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', width: '32px', flexShrink: 0 }}>
@@ -266,7 +262,6 @@ function Connector() {
   );
 }
 
-// ── Панель деталей матчу ──────────────────────────────────────────────────────
 function MatchDetail({ match, onClose }) {
   if (!match) return null;
 
@@ -317,7 +312,7 @@ function MatchDetail({ match, onClose }) {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
-        {/* Переможець */}
+        {}
         <div style={{ textAlign: 'center' }}>
           <div
             style={{
@@ -341,7 +336,7 @@ function MatchDetail({ match, onClose }) {
           <div style={{ fontWeight: 900, fontSize: '1rem', color: '#fff' }}>{winner.name}</div>
         </div>
 
-        {/* Рахунок */}
+        {}
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', letterSpacing: '4px' }}>
             {match.team1.score} <span style={{ color: '#222' }}>:</span> {match.team2.score}
@@ -357,7 +352,7 @@ function MatchDetail({ match, onClose }) {
           </div>
         </div>
 
-        {/* Програвший */}
+        {}
         <div style={{ textAlign: 'center', opacity: 0.4 }}>
           <div
             style={{
@@ -385,7 +380,6 @@ function MatchDetail({ match, onClose }) {
   );
 }
 
-// ── Головна сторінка ──────────────────────────────────────────────────────────
 export default function TournamentBracket() {
   const [selectedMatch, setSelectedMatch] = useState(null);
 
@@ -395,9 +389,16 @@ export default function TournamentBracket() {
 
   return (
     <PageLayout>
-      <div style={{ padding: '2rem 0' }}>
-        {/* ЗАГОЛОВОК */}
-        <div style={{ marginBottom: '2.5rem' }}>
+      <style>{`
+        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @media (max-width: 600px) {
+          .bracket-header h1 { font-size: 1.5rem !important; }
+          .bracket-scroll-hint { display: flex !important; }
+        }
+      `}</style>
+      <div style={{ padding: '2rem 0', animation: 'fadeUp 0.4s ease both' }}>
+        {}
+        <div className="bracket-header" style={{ marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <span
               style={{
@@ -434,7 +435,7 @@ export default function TournamentBracket() {
           </div>
         </div>
 
-        {/* СІТКА */}
+        {}
         <div
           style={{
             background: '#040404',
@@ -444,8 +445,21 @@ export default function TournamentBracket() {
             overflowX: 'auto',
           }}
         >
+          <div
+            className="bracket-scroll-hint"
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              gap: 6,
+              color: '#333',
+              fontSize: '0.65rem',
+              marginBottom: 16,
+            }}
+          >
+            <span>←</span> Прокрути для перегляду сітки <span>→</span>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0', minWidth: '800px' }}>
-            {/* Чвертьфінали */}
+            {}
             <RoundColumn
               title="Чвертьфінал"
               matches={BRACKET.quarterFinals}
@@ -455,7 +469,7 @@ export default function TournamentBracket() {
 
             <Connector />
 
-            {/* Півфінали */}
+            {}
             <RoundColumn
               title="Півфінал"
               matches={BRACKET.semiFinals}
@@ -465,7 +479,7 @@ export default function TournamentBracket() {
 
             <Connector />
 
-            {/* Фінал */}
+            {}
             <RoundColumn
               title="🏆 Гранд Фінал"
               matches={[BRACKET.grandFinal]}
@@ -476,7 +490,7 @@ export default function TournamentBracket() {
           </div>
         </div>
 
-        {/* ЛЕГЕНДА */}
+        {}
         <div style={{ display: 'flex', gap: '20px', marginTop: '16px', paddingLeft: '4px' }}>
           {[
             { color: '#a800ff', label: 'Переможець' },
@@ -495,7 +509,7 @@ export default function TournamentBracket() {
           </span>
         </div>
 
-        {/* ДЕТАЛІ МАТЧУ */}
+        {}
         {selectedMatch && (
           <MatchDetail match={selectedMatch} onClose={() => setSelectedMatch(null)} />
         )}

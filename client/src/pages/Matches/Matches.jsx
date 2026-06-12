@@ -4,7 +4,6 @@ import { PageLayout } from '../../components/layout/PageLayout';
 import { PageLoader } from '../../components/common/UI';
 import { matchService, tournamentService } from '../../api/services';
 
-// ── Статус бейдж ──────────────────────────────────────────────────────────────
 function StatusBadge({ status }) {
   const cfg = {
     finished: { label: 'ЗАВЕРШЕНО', bg: '#111', color: '#444' },
@@ -30,7 +29,6 @@ function StatusBadge({ status }) {
   );
 }
 
-// ── Картка матчу ──────────────────────────────────────────────────────────────
 function MatchCard({ match, onClick }) {
   const date = match.startTime
     ? new Date(match.startTime).toLocaleDateString('uk-UA', {
@@ -61,7 +59,7 @@ function MatchCard({ match, onClick }) {
       onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#a800ff44')}
       onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#111')}
     >
-      {/* Команда 1 */}
+      {}
       <div
         style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-end' }}
       >
@@ -95,7 +93,7 @@ function MatchCard({ match, onClick }) {
         )}
       </div>
 
-      {/* Центр */}
+      {}
       <div style={{ textAlign: 'center', minWidth: '100px' }}>
         <div
           style={{
@@ -115,7 +113,7 @@ function MatchCard({ match, onClick }) {
         </div>
       </div>
 
-      {/* Команда 2 */}
+      {}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         {match.team2?.logo ? (
           <img
@@ -148,7 +146,6 @@ function MatchCard({ match, onClick }) {
   );
 }
 
-// ── Головна сторінка ──────────────────────────────────────────────────────────
 export default function Matches() {
   const navigate = useNavigate();
 
@@ -157,16 +154,13 @@ export default function Matches() {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, pages: 1 });
 
-  // Фільтри
   const [yearFilter, setYearFilter] = useState('');
   const [tournamentFilter, setTournamentFilter] = useState('');
   const [page, setPage] = useState(1);
 
-  // Роки для фільтру (2020 — поточний)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
 
-  // Завантаження турнірів для фільтру
   useEffect(() => {
     tournamentService
       .getAll()
@@ -177,7 +171,6 @@ export default function Matches() {
       .catch(() => {});
   }, []);
 
-  // Завантаження матчів
   const loadMatches = useCallback(() => {
     setLoading(true);
     const params = { page, limit: 20 };
@@ -198,7 +191,6 @@ export default function Matches() {
     loadMatches();
   }, [loadMatches]);
 
-  // Скидати сторінку при зміні фільтрів
   const handleYearChange = (v) => {
     setYearFilter(v);
     setPage(1);
@@ -218,7 +210,7 @@ export default function Matches() {
   return (
     <PageLayout>
       <div style={{ padding: '2rem 0' }}>
-        {/* ЗАГОЛОВОК */}
+        {}
         <div style={{ marginBottom: '2.5rem' }}>
           <h1
             style={{
@@ -236,7 +228,7 @@ export default function Matches() {
           </p>
         </div>
 
-        {/* ФІЛЬТРИ */}
+        {}
         <div
           style={{
             display: 'flex',
@@ -263,7 +255,7 @@ export default function Matches() {
             ФІЛЬТРИ
           </span>
 
-          {/* Фільтр за роком */}
+          {}
           <select
             value={yearFilter}
             onChange={(e) => handleYearChange(e.target.value)}
@@ -277,7 +269,7 @@ export default function Matches() {
             ))}
           </select>
 
-          {/* Фільтр за турніром */}
+          {}
           <select
             value={tournamentFilter}
             onChange={(e) => handleTournamentChange(e.target.value)}
@@ -291,7 +283,7 @@ export default function Matches() {
             ))}
           </select>
 
-          {/* Скинути фільтри */}
+          {}
           {hasFilters && (
             <button
               onClick={handleReset}
@@ -314,7 +306,7 @@ export default function Matches() {
             </button>
           )}
 
-          {/* Активні фільтри */}
+          {}
           <div style={{ display: 'flex', gap: '8px', marginLeft: 'auto', flexWrap: 'wrap' }}>
             {yearFilter && (
               <span style={chipStyle}>
@@ -343,7 +335,7 @@ export default function Matches() {
           </div>
         </div>
 
-        {/* СПИСОК МАТЧІВ */}
+        {}
         {loading ? (
           <PageLoader />
         ) : matches.length === 0 ? (
@@ -382,7 +374,7 @@ export default function Matches() {
           </div>
         )}
 
-        {/* ПАГІНАЦІЯ */}
+        {}
         {pagination.pages > 1 && (
           <div
             style={{
@@ -437,7 +429,6 @@ export default function Matches() {
   );
 }
 
-// ── Стилі ─────────────────────────────────────────────────────────────────────
 const selectStyle = {
   background: '#0a0a0a',
   border: '1px solid #1a1a1a',

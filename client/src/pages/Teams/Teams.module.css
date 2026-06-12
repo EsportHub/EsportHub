@@ -94,7 +94,6 @@
   margin-top: 0.5rem;
 }
 
-/* Пошук */
 .searchWrapper {
   position: relative;
   display: flex;
@@ -120,7 +119,6 @@
   right: 12px;
 }
 
-/* СІТКА */
 .teamsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -143,9 +141,8 @@
   box-shadow: 0 0 20px rgba(168, 0, 255, 0.15);
 }
 
-/* ФІКС ЗІРОЧКИ */
 .favoriteBtn {
-  all: unset; /* Повне скидання стилів браузера для кнопок */
+  all: unset;
   position: absolute;
   top: 15px;
   right: 15px;
@@ -161,7 +158,6 @@
   filter: drop-shadow(0 0 8px #a800ff);
 }
 
-/* ФІКС ЛОГОТИПІВ */
 .teamLogoLarge {
   width: 85px;
   height: 85px;
@@ -182,7 +178,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 10px; /* Щоб лого не торкалося країв кола */
+  padding: 10px;
 }
 
 .teamCard:hover .teamLogoLarge {
@@ -217,7 +213,7 @@
   color: #444;
   text-decoration: none;
 }
-/* СТИЛІ ТОСТІВ ІЗ SIGNIN.MODULE.CSS */
+
 .toast {
   position: fixed;
   bottom: 40px;
@@ -236,15 +232,35 @@
 }
 
 .toastIcon {
-  width: 24px; height: 24px; background: #a800ff; color: #fff;
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-weight: bold; font-size: 14px;
+  width: 24px;
+  height: 24px;
+  background: #a800ff;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
 }
 
-.toastSuccess { border-left-color: #a800ff; box-shadow: 0 0 20px rgba(168, 0, 255, 0.3); }
-.toastError { border-left-color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
+.toastSuccess {
+  border-left-color: #a800ff;
+  box-shadow: 0 0 20px rgba(168, 0, 255, 0.3);
+}
+
+.toastError {
+  border-left-color: #ff0055;
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+}
 
 @keyframes slideLeft {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

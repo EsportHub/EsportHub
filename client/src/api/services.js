@@ -21,16 +21,16 @@ export const matchService = {
   getById: (id) => apiClient.get(`/matches/${id}`),
   getArchive: (params) => apiClient.get('/matches/archive', { params }),
 
-  getSubscriptions: (userId) => apiClient.get(`matches/subscriptions/${userId}`),
+  getSubscriptions: (userId) => apiClient.get(`/matches/subscriptions/${userId}`),
 
   subscribe: (userId, matchId) =>
-    apiClient.post('matches/subscriptions', {
+    apiClient.post('/matches/subscriptions', {
       user_id: userId,
       match_id: matchId,
     }),
 
   unsubscribe: (userId, matchId) =>
-    apiClient.delete('matches/subscriptions', {
+    apiClient.delete('/matches/subscriptions', {
       data: {
         user_id: userId,
         match_id: matchId,

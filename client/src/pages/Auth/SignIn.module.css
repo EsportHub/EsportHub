@@ -1,23 +1,20 @@
-/* Auth Variables */
 :root {
-  --auth-bg: #000000;           /* Чистий чорний для фону */
-  --auth-input-bg: #120021;     /* Темно-фіолетовий для полів вводу */
-  --auth-border: #120021;       /* Рамка в колір фону інпуту */
-  --auth-border-focus: #a800ff; /* Яскравий фокус */
+  --auth-bg: #000000;
+  --auth-input-bg: #120021;
+  --auth-border: #120021;
+  --auth-border-focus: #a800ff;
   --auth-text: #ffffff;
   --auth-text-muted: #888888;
-  --auth-primary: #a800ff;      /* Насичений фіолетовий */
+  --auth-primary: #a800ff;
   --auth-primary-hover: #bc33ff;
 }
 
-/* Container */
 .container {
   display: flex;
   min-height: 100vh;
   background-color: var(--auth-bg);
 }
 
-/* Image Side */
 .imageSide {
   flex: 1;
   position: relative;
@@ -39,7 +36,6 @@
   object-fit: cover;
 }
 
-/* Form Side */
 .formSide {
   flex: 1;
   display: flex;
@@ -54,23 +50,20 @@
   max-width: 420px;
 }
 
-/* Title */
 .title {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--auth-text);
   margin-bottom: 2.5rem;
-  font-style: normal; /* Прибрав італік згідно з фото */
+  font-style: normal;
 }
 
-/* Form */
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
-/* Input Group */
 .inputGroup {
   display: flex;
   flex-direction: column;
@@ -108,7 +101,6 @@
   margin-top: 0.25rem;
 }
 
-/* Checkbox */
 .checkboxGroup {
   display: flex;
   align-items: center;
@@ -129,7 +121,6 @@
   cursor: pointer;
 }
 
-/* Submit Button */
 .submitButton {
   width: 100%;
   padding: 0.875rem;
@@ -148,16 +139,14 @@
   background: var(--auth-primary-hover);
 }
 
-/* Divider - Тонка лінія */
 .divider {
   width: 100%;
   height: 1px;
   background-color: #333333;
   margin: 1rem 0;
-  color: transparent; /* Ховаємо текст "або", якщо він є */
+  color: transparent;
 }
 
-/* Social Buttons */
 .socialButtons {
   display: flex;
   gap: 1rem;
@@ -184,7 +173,6 @@
   background-color: rgba(168, 0, 255, 0.1);
 }
 
-/* Footer Link */
 .footerText {
   margin-top: 2rem;
   font-size: 0.8rem;
@@ -198,7 +186,6 @@
   font-weight: 500;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   .formSide {
     padding: 1.5rem;
@@ -212,12 +199,12 @@
     flex-direction: column;
   }
 }
-/* Базовий стиль тоста */
+
 .toast {
   position: fixed;
   bottom: 40px;
-  right: 40px; /* Зробимо збоку для різноманітності */
-  background: #0d0d0d; /* Глибокий чорний */
+  right: 40px;
+  background: #0d0d0d;
   color: #fff;
   padding: 16px 24px;
   border-radius: 12px;
@@ -226,14 +213,14 @@
   gap: 15px;
   z-index: 10000;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(168, 0, 255, 0.2);
-  border-left: 4px solid #a800ff; /* Фіолетова лінія збоку */
+  border-left: 4px solid #a800ff;
   animation: slideLeft 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
 .toastIcon {
   width: 24px;
   height: 24px;
-  background: #a800ff; /* Фіолетовий фон іконки */
+  background: #a800ff;
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -243,13 +230,11 @@
   font-size: 14px;
 }
 
-/* Успішний тост - неоновий фіолетовий */
 .toastSuccess {
   border-left-color: #a800ff;
   box-shadow: 0 0 20px rgba(168, 0, 255, 0.3);
 }
 
-/* Помилка - темно-червоний з фіолетовим відливом */
 .toastError {
   border-left-color: #ff0055;
   box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
@@ -260,7 +245,6 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Додай ці стилі для посилань, щоб вони були фіолетовими */
 .footerLink {
   color: #a800ff;
   font-weight: bold;

@@ -2,18 +2,18 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const ToastContext = createContext(null);
-let _id = 0;
+let toastIdCounter = 0;
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
   const addToast = useCallback((message, type = 'error', duration = 3500) => {
-    const id = ++_id;
-    setToasts((p) => [...p, { id, message, type }]);
-    setTimeout(() => setToasts((p) => p.filter((t) => t.id !== id)), duration);
+    const id = ++toastIdCounter;
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), duration);
   }, []);
 
-  const removeToast = useCallback((id) => setToasts((p) => p.filter((t) => t.id !== id)), []);
+  const removeToast = useCallback((id) => setToasts((prev) => prev.filter((t) => t.id !== id)), []);
 
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>
@@ -38,11 +38,11 @@ export function ToastProvider({ children }) {
 }
 
 function ToastItem({ toast, onRemove }) {
-  const ok = toast.type === 'success';
-  const warn = toast.type === 'warning';
-  const border = ok ? '#a800ff' : warn ? '#ffcc00' : '#ff0055';
-  const iconBg = ok ? '#a800ff' : warn ? '#ffcc00' : '#ff0055';
-  const icon = ok ? '✓' : warn ? '!' : '✕';
+  const isSuccess = toast.type === 'success';
+  const isWarning = toast.type === 'warning';
+  const accentColor = isSuccess ? '#a800ff' : isWarning ? '#ffcc00' : '#ff0055';
+  const icon = isSuccess ? '✓' : isWarning ? '!' : '✕';
+
   return (
     <div
       onClick={() => onRemove(toast.id)}
@@ -54,8 +54,8 @@ function ToastItem({ toast, onRemove }) {
         display: 'flex',
         alignItems: 'center',
         gap: 14,
-        boxShadow: `0 10px 40px rgba(0,0,0,.8), 0 0 15px ${border}44`,
-        borderLeft: `4px solid ${border}`,
+        boxShadow: `0 10px 40px rgba(0,0,0,.8), 0 0 15px ${accentColor}44`,
+        borderLeft: `4px solid ${accentColor}`,
         animation: 'toastIn .35s cubic-bezier(.18,.89,.32,1.28)',
         cursor: 'pointer',
         minWidth: 280,
@@ -66,8 +66,8 @@ function ToastItem({ toast, onRemove }) {
         style={{
           width: 24,
           height: 24,
-          background: iconBg,
-          color: warn ? '#000' : '#fff',
+          background: accentColor,
+          color: isWarning ? '#000' : '#fff',
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',

@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './MatchLiveCenter.module.css';
 
-// 🚨 ПІДСТАВ СВІЙ ШЛЯХ ДО КОМПОНЕНТІВ ХЕДЕРА ТА ФУТЕРА
 import Header from '../../components/layout/Header';
-import {Footer} from '../../components/layout/Footer';
+import { Footer } from '../../components/layout/Footer';
 
-// --- ПОЧАТКОВІ ТЕСТОВІ ДАНІ (MOCK DATA) ---
 const initialPickBans = [
   { team: 'navi', type: 'BAN', map: 'Vertigo', color: '#6b1111' },
   { team: 'navi', type: 'Pick', map: 'Ancient', color: '#3a0066' },
@@ -113,11 +111,11 @@ export default function MatchLiveCenter() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* 🔥 Використовуємо твій готовий компонент Header */}
+      {}
       <Header />
 
       <main className={styles.content}>
-        {/* РАХУНОК ТА ІНФО */}
+        {}
         <div className={styles.scoreboardTop}>
           <div className={styles.teamLogo}>NAVI</div>
 
@@ -136,7 +134,7 @@ export default function MatchLiveCenter() {
           <div className={styles.teamLogo}>FaZe</div>
         </div>
 
-        {/* Кнопка поділитися */}
+        {}
         <div className={styles.matchHeader}>
           <div className={styles.actions}>
             <button className={styles.shareBtn} onClick={handleShare}>
@@ -159,7 +157,7 @@ export default function MatchLiveCenter() {
           </div>
         </div>
 
-        {/* ПЛЕЄР / СТРІМ */}
+        {}
         <div className={styles.streamArea}>
           <div className={styles.playerPlaceholder}>
             <svg width="60" height="60" viewBox="0 0 24 24" fill="#a800ff">
@@ -169,7 +167,7 @@ export default function MatchLiveCenter() {
           </div>
         </div>
 
-        {/* ЕТАП PICK / BAN */}
+        {}
         <div className={styles.pickBanSection}>
           <h3 className={styles.sectionTitle}>Фаза Pick/Ban</h3>
           <div className={styles.pickBanRow}>
@@ -189,7 +187,7 @@ export default function MatchLiveCenter() {
           </div>
         </div>
 
-        {/* LIVE СТАТИСТИКА K/D/A */}
+        {}
         <div className={styles.statsSection}>
           <h2 className={styles.sectionTitle}>Live статистика гравців</h2>
 
@@ -199,7 +197,7 @@ export default function MatchLiveCenter() {
               <StatsTable teamName="FaZe" players={fazeStats} />
             </div>
 
-            {/* Хронологія */}
+            {}
             <div className={styles.infoColumn}>
               <h3 className={styles.sectionTitle}>Хронологія матчу</h3>
               <div className={styles.timelinePlaceholder}>
@@ -218,10 +216,10 @@ export default function MatchLiveCenter() {
         </div>
       </main>
 
-      {/* 🔥 Використовуємо твій готовий компонент Footer */}
+      {}
       <Footer />
 
-      {/* Toast Повідомлення */}
+      {}
       {showToast && (
         <div className={`${styles.toast} ${styles.toastSuccess}`}>
           <div className={styles.toastIcon}>✓</div>

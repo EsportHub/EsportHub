@@ -1,4 +1,3 @@
-// src/pages/Profile/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../../components/layout/PageLayout';
 import { PageLoader, Spinner } from '../../components/common/UI';
@@ -125,7 +124,6 @@ export default function Profile() {
     country: 'Ukraine',
   });
 
-  // Підтримка різних назв поля id з бекенду
   const userId = user?.user_id || user?.userId || user?.id;
 
   useEffect(() => {
@@ -192,9 +190,23 @@ export default function Profile() {
 
   return (
     <PageLayout>
-      <div style={{ padding: '2rem 0' }}>
-        {/* Profile card */}
+      <style>{`
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(168,0,255,.2)} 50%{box-shadow:0 0 36px rgba(168,0,255,.45)} }
+        @media (max-width: 768px) {
+          .profile-hero { flex-direction: column !important; align-items: flex-start !important; gap: 1.5rem !important; padding: 2rem !important; }
+          .profile-games { flex-wrap: wrap !important; }
+          .profile-fav-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 480px) {
+          .profile-hero { padding: 1.5rem !important; }
+          .profile-nickname { font-size: 1.5rem !important; }
+        }
+      `}</style>
+      <div style={{ padding: '2rem 0', animation: 'fadeUp 0.4s ease both' }}>
+        {}
         <section
+          className="profile-hero"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -221,6 +233,7 @@ export default function Profile() {
                 fontSize: '2.5rem',
                 fontWeight: 900,
                 boxShadow: '0 0 20px rgba(168,0,255,.2)',
+                animation: 'glowPulse 3s ease-in-out infinite',
               }}
             >
               {profile.nickname[0]?.toUpperCase()}
@@ -269,7 +282,7 @@ export default function Profile() {
                   >
                     Оберіть гру
                   </span>
-                  <div style={{ display: 'flex', gap: 8 }}>
+                  <div className="profile-games" style={{ display: 'flex', gap: 8 }}>
                     {GAMES.map((g) => {
                       const isActive = profile.game === g.id;
                       return (
@@ -386,13 +399,14 @@ export default function Profile() {
           </div>
         </section>
 
-        {/* Favorite teams */}
+        {}
         <section>
           <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem' }}>Обрані команди</h2>
           {favTeams.length === 0 ? (
             <p style={{ color: '#555', fontStyle: 'italic' }}>У вас поки немає обраних команд.</p>
           ) : (
             <div
+              className="profile-fav-grid"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',

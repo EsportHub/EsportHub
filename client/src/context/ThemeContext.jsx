@@ -6,38 +6,30 @@ import { useAuth } from './AuthContext';
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  // Початкова тема з localStorage або за замовчуванням dark
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const { user, isAuthenticated } = useAuth();
 
-  // Ефект для застосування теми до документа
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    document.body.className = `${theme}-theme`;
     localStorage.setItem('theme', theme);
-
-    // Також додаємо клас до body для зручності стилізації в CSS
-    document.body.className = theme + '-theme';
   }, [theme]);
 
-  // Синхронізація теми з профілем користувача при логіні
   useEffect(() => {
     if (isAuthenticated && user?.theme && user.theme !== theme) {
       setTheme(user.theme);
     }
-  }, [isAuthenticated, user?.theme]);
+  }, [isAuthenticated, user?.theme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleTheme = async () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
 
-    // Використовуємо user_id або id для запиту
     const userId = user?.user_id || user?.id;
-
     if (isAuthenticated && userId) {
       try {
         await userService.updateProfile(userId, { theme_preference: next });
-      } catch (error) {
-        console.error('Не вдалося зберегти налаштування теми на сервері', error);
+      } catch {
       }
     }
   };

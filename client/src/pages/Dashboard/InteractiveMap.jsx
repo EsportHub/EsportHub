@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
 
-// ─── Discipline config ────────────────────────────────────────────────────────
 const DISCIPLINES = [
   { key: 'all', label: 'Всі', color: '#a800ff' },
   { key: 'CS2', label: 'CS2', color: '#ff6b35' },
@@ -13,7 +12,6 @@ const disciplineColor = (game) => {
   return found ? found.color : '#a800ff';
 };
 
-// ─── Recenter map when filter changes ────────────────────────────────────────
 function FitBounds({ points }) {
   const map = useMap();
   React.useEffect(() => {
@@ -32,7 +30,6 @@ function FitBounds({ points }) {
   return null;
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
 export default function InteractiveMap({ tournaments = [], onCountryClick, onTournamentClick }) {
   const [activeDiscipline, setActiveDiscipline] = useState('all');
 
@@ -51,7 +48,7 @@ export default function InteractiveMap({ tournaments = [], onCountryClick, onTou
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* ── Discipline Filter Bar ── */}
+      {}
       <div style={styles.filterBar}>
         <span style={styles.filterLabel}>ДИСЦИПЛІНА</span>
         <div style={styles.filterPills}>
@@ -79,7 +76,7 @@ export default function InteractiveMap({ tournaments = [], onCountryClick, onTou
         </div>
       </div>
 
-      {/* ── Leaflet Map ── */}
+      {}
       <MapContainer
         center={[20, 10]}
         zoom={2}
@@ -136,7 +133,7 @@ export default function InteractiveMap({ tournaments = [], onCountryClick, onTou
         })}
       </MapContainer>
 
-      {/* ── Legend ── */}
+      {}
       <div style={styles.legend}>
         {DISCIPLINES.filter((d) => d.key !== 'all').map((d) => (
           <div key={d.key} style={styles.legendItem}>
@@ -146,7 +143,7 @@ export default function InteractiveMap({ tournaments = [], onCountryClick, onTou
         ))}
       </div>
 
-      {/* ── Empty state ── */}
+      {}
       {mappable.length === 0 && (
         <div style={styles.emptyOverlay}>
           <p style={{ color: '#555', fontSize: '0.8rem', fontWeight: 600 }}>
@@ -158,7 +155,6 @@ export default function InteractiveMap({ tournaments = [], onCountryClick, onTou
   );
 }
 
-// ─── Icons ───────────────────────────────────────────────────────────────────
 function DisciplineIcon({ discipline, size = 14 }) {
   if (discipline === 'CS2') {
     return (
@@ -194,7 +190,6 @@ function DisciplineIcon({ discipline, size = 14 }) {
   return null;
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = {
   filterBar: {
     display: 'flex',

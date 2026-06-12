@@ -1,10 +1,9 @@
-// src/pages/Teams/Teams.jsx
 import React, { useState, useEffect } from 'react';
 import { PageLayout } from '../../components/layout/PageLayout';
 import { PageLoader, ErrorState, EmptyState } from '../../components/common/UI';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { teamService, userService } from '../../api/services';
+import { teamService, favoriteService } from '../../api/services';
 
 export default function Teams() {
   const { user } = useAuth();
@@ -20,9 +19,7 @@ export default function Teams() {
       try {
         const [teamsRes, favsRes] = await Promise.all([
           teamService.getAll(),
-          user?.id
-            ? userService.getFavoriteTeams(user.id)
-            : Promise.resolve({ data: { data: [] } }),
+          user?.id ? favoriteService.getTeams(user.id) : Promise.resolve({ data: { data: [] } }),
         ]);
         const allTeams = teamsRes.data?.data || teamsRes.data || [];
         const favData = favsRes.data?.data || favsRes.data || [];
@@ -47,11 +44,11 @@ export default function Teams() {
     const isFav = favorites.includes(id);
     try {
       if (isFav) {
-        await userService.removeFavoriteTeam(user.id, id);
+        await favoriteService.removeTeam(user.id, id);
         setFavorites((p) => p.filter((f) => f !== id));
         addToast(`Видалено ${team.name} з обраного`, 'success');
       } else {
-        await userService.addFavoriteTeam(user.id, id);
+        await favoriteService.addTeam(user.id, id);
         setFavorites((p) => [...p, id]);
         addToast(`${team.name} додано в обране!`, 'success');
       }
@@ -86,8 +83,17 @@ export default function Teams() {
 
   return (
     <PageLayout>
-      <div style={{ padding: '2rem 0' }}>
+      <style>{`
+        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @media (max-width: 640px) {
+          .teams-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+          .teams-search input { width: 100% !important; }
+          .teams-search { width: 100% !important; }
+        }
+      `}</style>
+      <div style={{ padding: '2rem 0', animation: 'fadeUp 0.4s ease both' }}>
         <div
+          className="teams-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -103,7 +109,10 @@ export default function Teams() {
               Керуй списком своїх улюблених організацій.
             </p>
           </div>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          <div
+            className="teams-search"
+            style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+          >
             <input
               type="text"
               placeholder="Назва або тег..."
