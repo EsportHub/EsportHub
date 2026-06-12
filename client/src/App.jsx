@@ -5,6 +5,7 @@ import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
+
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SignUp';
 import Dashboard from './pages/Dashboard/Dashboard';
