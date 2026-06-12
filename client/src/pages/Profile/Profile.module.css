@@ -1,0 +1,254 @@
+.profilePage {
+  background-color: #000;
+  color: #fff;
+  min-height: 100vh;
+  padding: 0 4rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #111;
+}
+
+.logo { font-size: 1.6rem; font-weight: 800; color: #a800ff; }
+.nav { display: flex; gap: 2rem; }
+.nav a { color: #fff; text-decoration: none; font-size: 0.9rem; opacity: 0.6; }
+.activeLink { opacity: 1 !important; color: #a800ff !important; }
+
+.profileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ffcc00;
+  overflow: hidden;
+}
+.profileAvatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background: linear-gradient(135deg, #0a0a0a 0%, #120021 100%);
+  padding: 3rem;
+  border-radius: 20px;
+  margin-top: 3rem;
+  border: 1px solid #222;
+  position: relative;
+}
+
+.avatarCircle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #a800ff;
+  padding: 5px;
+  box-shadow: 0 0 20px rgba(168, 0, 255, 0.2);
+}
+.avatarCircle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+.statusBadge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #ffcc00;
+  color: #000;
+  font-weight: 900;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.userInfo { flex: 1; }
+.nameHeader { display: flex; align-items: center; gap: 1rem; }
+.nickname { font-size: 2.5rem; margin: 0; font-weight: 800; }
+.gameBadge { background: rgba(168, 0, 255, 0.1); border: 1px solid #a800ff; padding: 4px 10px; border-radius: 6px; color: #a800ff; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+
+.bioText { color: #888; margin: 0.5rem 0 1.5rem; font-size: 1rem; }
+.userMeta { display: flex; gap: 1.5rem; color: #555; font-size: 0.85rem; }
+.userMeta span { display: flex; align-items: center; gap: 6px; }
+
+.editInput { background: #000; border: 1px solid #a800ff; color: #fff; font-size: 1.5rem; padding: 0.5rem; border-radius: 6px; margin-bottom: 1rem; }
+.editTextarea { background: #0a0a0a; border: 1px solid #222; color: #ccc; padding: 0.8rem; border-radius: 6px; width: 100%; resize: none; }
+.disciplineSelector p { font-size: 0.7rem; color: #444; letter-spacing: 1px; margin-bottom: 0.5rem; }
+.gameOptions { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.gameOpt {
+  background: #111;
+  border: 1px solid #333;
+  color: #666;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all .18s;
+}
+.gameOptActive {
+  border-color: #a800ff;
+  color: #fff;
+  background: rgba(168, 0, 255, 0.15);
+  box-shadow: 0 0 10px rgba(168, 0, 255, 0.25);
+}
+.gameOpt:hover:not(.gameOptActive) { border-color: #555; color: #aaa; }
+
+.editBtn, .saveBtn { background: transparent; border: 1px solid #a800ff; color: #a800ff; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.saveBtn { background: #a800ff; color: #fff; }
+
+.settingsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+.settingsCard { background: #0a0a0a; border: 1px solid #222; padding: 1.5rem; border-radius: 12px; }
+.settingsCard h3 { margin: 0 0 0.5rem 0; color: #a800ff; font-size: 1.1rem; }
+.settingsCard p { color: #555; font-size: 0.9rem; margin-bottom: 1rem; }
+.actionLink { background: transparent; border: none; color: #fff; font-weight: 600; cursor: pointer; }
+
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.teamCard {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.teamIconBox {
+  width: 48px;
+  height: 48px;
+  background: #a800ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin-right: 14px;
+}
+
+.teamNameText {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.teamSubInfo {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2px;
+}
+
+.teamCountry {
+  color: #a800ff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.teamDate {
+  color: #555;
+  font-size: 0.75rem;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #444;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.removeBtn:hover {
+  color: #ff4444;
+}
+
+.noData {
+  color: #555;
+  font-style: italic;
+}
+
+.favoritesSection {
+  margin-top: 4rem;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.teamCard {
+  background: #0a0a0a;
+  border: 1px solid #222;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teamInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.teamLogoBox {
+  width: 45px;
+  height: 45px;
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
+.teamName {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.teamTag {
+  color: #a800ff;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.removeBtn:hover {
+  color: #ff4444;
+}
+
+.footer {
+  margin-top: 5rem;
+  padding: 2rem 0;
+  border-top: 1px solid #111;
+  display: flex;
+  justify-content: space-between;
+  color: #333;
+  font-size: 0.8rem;
+}
+
+.footer a {
+  color: #333;
+  text-decoration: none;
+}
