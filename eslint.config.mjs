@@ -26,24 +26,30 @@ export default [
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "no-console": "warn",
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // ← ігнорує _next, _err і т.д.
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     },
   },
-  // ← блок для тестів
   {
     files: ["**/*.test.js", "**/*.spec.js"],
     languageOptions: {
       globals: {
         ...globals.jest,
-        describe:  "readonly",
-        it:        "readonly",
-        test:      "readonly",
-        expect:    "readonly",
-        beforeAll: "readonly",
-        afterAll:  "readonly",
+        describe:   "readonly",
+        it:         "readonly",
+        test:       "readonly",
+        expect:     "readonly",
+        beforeAll:  "readonly",
+        afterAll:   "readonly",
         beforeEach: "readonly",
         afterEach:  "readonly",
       },
+    },
+  },
+  {
+    files: ["client/**/*.{js,jsx}"],
+    rules: {
+      "react/prop-types": "off",
+      "no-unused-vars": "warn",
     },
   },
   prettierConfig,
