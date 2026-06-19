@@ -16,6 +16,7 @@ exports.register = async (req, res, next) => {
     next(error);
   }
 };
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -28,5 +29,14 @@ exports.login = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+exports.oauthCallback = (req, res) => {
+  try {
+    const token = authService.generateToken(req.user);
+    res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}`);
+  } catch (error) {
+    res.redirect(`${process.env.CLIENT_URL}/login?error=oauth_failed`);
   }
 };
