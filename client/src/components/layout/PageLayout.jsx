@@ -1,8 +1,6 @@
-
-
 // src/components/layout/PageLayout.jsx
 import Header from './Header';
-import {Footer} from './Footer';
+import { Footer } from './Footer';
 
 export function PageLayout({ children }) {
   return (

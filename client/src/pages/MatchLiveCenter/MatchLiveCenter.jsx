@@ -4,7 +4,7 @@ import styles from './MatchLiveCenter.module.css';
 
 // 🚨 ПІДСТАВ СВІЙ ШЛЯХ ДО КОМПОНЕНТІВ ХЕДЕРА ТА ФУТЕРА
 import Header from '../../components/layout/Header';
-import {Footer} from '../../components/layout/Footer';
+import { Footer } from '../../components/layout/Footer';
 
 // --- ПОЧАТКОВІ ТЕСТОВІ ДАНІ (MOCK DATA) ---
 const initialPickBans = [

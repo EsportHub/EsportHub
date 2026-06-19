@@ -20,7 +20,12 @@ class TournamentService {
   }
 
   async getTournamentsForMap(gameId = null) {
-    return tournamentRepository.findForMap(gameId);
+    const pandaScoreService = require('../../infrastructure/external/pandaScoreService');
+
+    const localTournaments = await tournamentRepository.findForMap(gameId);
+    const staticTournaments = await pandaScoreService.getTournamentsWithLocation();
+
+    return [...localTournaments, ...staticTournaments];
   }
 }
 

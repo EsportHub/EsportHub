@@ -148,62 +148,81 @@ module.exports = {
 
     // PLAYER TRANSFERS
     await queryInterface.bulkInsert('player_transfer', [
+      // s1mple — повна кар'єра
       {
-        player_id: 1,
-        from_team_id: null,
-        to_team_id: 1,
-        transfer_date: '2016-08-17',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Підписання з Natus Vincere',
+        player_id: 1, from_team_id: null, to_team_id: 1,
+        transfer_date: '2016-08-17', transfer_fee: null,
+        status: 'confirmed', notes: 'Підписання з Natus Vincere',
       },
       {
-        player_id: 2,
-        from_team_id: null,
-        to_team_id: 1,
-        transfer_date: '2018-03-12',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Підписання з Natus Vincere',
+        player_id: 1, from_team_id: 1, to_team_id: 2,
+        transfer_date: '2022-01-10', transfer_fee: null,
+        status: 'confirmed', notes: 'Оренда до Team Liquid',
       },
       {
-        player_id: 3,
-        from_team_id: null,
-        to_team_id: 4,
-        transfer_date: '2018-10-01',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Підписання з Team Vitality',
+        player_id: 1, from_team_id: 2, to_team_id: 1,
+        transfer_date: '2022-07-01', transfer_fee: null,
+        status: 'confirmed', notes: 'Повернення до NaVi',
+      },
+
+      // electroNic
+      {
+        player_id: 2, from_team_id: null, to_team_id: 1,
+        transfer_date: '2018-03-12', transfer_fee: null,
+        status: 'confirmed', notes: 'Підписання з Natus Vincere',
+      },
+
+      // ZywOo — кілька переходів
+      {
+        player_id: 3, from_team_id: null, to_team_id: 4,
+        transfer_date: '2018-10-01', transfer_fee: null,
+        status: 'confirmed', notes: 'Підписання з Team Vitality',
       },
       {
-        player_id: 4,
-        from_team_id: 3,
-        to_team_id: 2,
-        transfer_date: '2021-01-11',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Перехід з Astralis до Team Liquid',
+        player_id: 3, from_team_id: 4, to_team_id: 2,
+        transfer_date: '2023-08-15', transfer_fee: 1200000,
+        status: 'confirmed', notes: 'Перехід до Team Liquid',
       },
       {
-        player_id: 4,
-        from_team_id: 2,
-        to_team_id: 3,
-        transfer_date: '2022-06-30',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Повернення до Astralis',
+        player_id: 3, from_team_id: 2, to_team_id: 4,
+        transfer_date: '2024-02-01', transfer_fee: null,
+        status: 'confirmed', notes: 'Повернення до Vitality',
+      },
+
+      // device — найкрасивіша хронологія для демо
+      {
+        player_id: 4, from_team_id: null, to_team_id: 3,
+        transfer_date: '2013-06-01', transfer_fee: null,
+        status: 'confirmed', notes: 'Початок кар\'єри в Astralis',
       },
       {
-        player_id: 5,
-        from_team_id: null,
-        to_team_id: 2,
-        transfer_date: '2019-05-01',
-        transfer_fee: null,
-        status: 'confirmed',
-        notes: 'Підписання з Team Liquid',
+        player_id: 4, from_team_id: 3, to_team_id: 2,
+        transfer_date: '2021-01-11', transfer_fee: 850000,
+        status: 'confirmed', notes: 'Перехід до Team Liquid',
+      },
+      {
+        player_id: 4, from_team_id: 2, to_team_id: 3,
+        transfer_date: '2022-06-30', transfer_fee: null,
+        status: 'confirmed', notes: 'Повернення до Astralis',
+      },
+      {
+        player_id: 4, from_team_id: 3, to_team_id: 4,
+        transfer_date: '2024-01-20', transfer_fee: 500000,
+        status: 'confirmed', notes: 'Перехід до Team Vitality',
+      },
+
+      // nitr0
+      {
+        player_id: 5, from_team_id: null, to_team_id: 2,
+        transfer_date: '2019-05-01', transfer_fee: null,
+        status: 'confirmed', notes: 'Підписання з Team Liquid',
+      },
+      {
+        player_id: 5, from_team_id: 2, to_team_id: 1,
+        transfer_date: '2023-03-10', transfer_fee: 300000,
+        status: 'confirmed', notes: 'Перехід до NaVi',
       },
     ]);
-
     // MATCH
     await queryInterface.bulkInsert('match', [
       {
