@@ -78,6 +78,11 @@ class AuthService {
       token,
     };
   }
+
+  generateToken(user) {
+    return jwt.sign({ userId: user.user_id, username: user.username }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN});
+  }
 }
 
 module.exports = new AuthService();
