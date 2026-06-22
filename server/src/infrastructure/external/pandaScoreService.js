@@ -4,33 +4,34 @@ const axios = require('axios');
 
 const BASE_URL = 'https://api.pandascore.co';
 const API_KEY = process.env.PANDASCORE_API_KEY;
+console.log('PANDA KEY:', API_KEY);
 
 const pandaScoreService = {
   async getMatchesByDate(date, tier = null) {
     try {
       const params = {
-        'range[begin_at]': `${date}T00:00:00Z,${date}T23:59:59Z`,
         sort: 'begin_at',
         'page[size]': 50,
       };
 
+      // ❗ PandaScore НЕ стабільно підтримує range[begin_at]
+      // тому прибираємо його
+
       if (tier) {
-        // Крок 1: отримати турніри за tier
         const tourResponse = await axios.get(`${BASE_URL}/tournaments`, {
           headers: { Authorization: `Bearer ${API_KEY}` },
           params: {
             'filter[tier]': tier.toLowerCase(),
-            'range[begin_at]': `${date}T00:00:00Z,${date}T23:59:59Z`,
             'page[size]': 50,
           },
         });
 
         const ids = tourResponse.data.map((t) => t.id).join(',');
+
         console.log(`Знайдено турнірів tier=${tier}:`, tourResponse.data.length, 'ids:', ids);
 
-        if (!ids) return []; // немає турнірів — повертаємо порожній масив
+        if (!ids) return [];
 
-        // Крок 2: матчі лише цих турнірів
         params['filter[tournament_id]'] = ids;
       }
 
@@ -39,7 +40,14 @@ const pandaScoreService = {
         params,
       });
 
-      return response.data;
+      const data = response.data;
+
+      // 🔥 ФІЛЬТР ПО ДАТІ (робимо вручну, бо API unreliable)
+      const targetDate = date; // YYYY-MM-DD
+
+      const filtered = data.filter((m) => m.begin_at?.startsWith(targetDate));
+
+      return filtered;
     } catch (error) {
       console.error('PandaScore status:', error.response?.status);
       console.error('PandaScore body:', JSON.stringify(error.response?.data));
@@ -47,9 +55,14 @@ const pandaScoreService = {
     }
   },
 
-  async getTodayMatches(tier = null) {
-    const today = new Date().toISOString().split('T')[0];
-    return pandaScoreService.getMatchesByDate(today, tier);
+  async getTodayMatches() {
+    return axios.get(`${BASE_URL}/matches`, {
+      headers: { Authorization: `Bearer ${API_KEY}` },
+      params: {
+        'filter[status]': 'running',
+        'page[size]': 50,
+      },
+    });
   },
 
   async getTournamentsWithLocation() {
