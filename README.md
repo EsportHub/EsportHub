@@ -12,7 +12,28 @@
 ![ESLint](https://img.shields.io/badge/ESLint-Airbnb-1e1e2e?style=flat-square&logo=eslint&logoColor=a78bfa)
 ![PandaScore](https://img.shields.io/badge/PandaScore-API-1e1e2e?style=flat-square&logo=pandas&logoColor=a78bfa)
 
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-10-38 (2).jpg" width="180" alt="EsportHub Logo Light" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="client/src/img/photo_2026-06-24_09-10-38.jpg" width="180" alt="EsportHub Logo Dark" />
+</p>
+
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-10-59.jpg" width="700" alt="EsportHub Landing" />
+</p>
+
 **EsportHub** — це відкрита цифрова енциклопедія та база знань про світ кіберспорту. Проєкт працює за принципом Вікіпедії, дозволяючи спільноті збирати, структурувати та зберігати історію гравців, команд, турнірів та ігрових патчів в одному місці.
+
+---
+
+## Killer Feature: Interactive Esports Map
+
+- **Geospatial Discovery**: Натискайте на будь-яку країну на мапі, щоб миттєво отримати список топ-команд, провідних гравців та статистику кіберспортивної активності в цьому регіоні.
+- **Real-time Data**: Всі дані підтягуються безпосередньо з нашої бази даних, забезпечуючи актуальність інформації.
+
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27.jpg" width="700" alt="Interactive Map" />
+</p>
 
 ---
 
@@ -23,12 +44,25 @@
 - **Categorized Database**: Структуровані дані про трансфери, призові фонди та статистику турнірів.
 - **Infoboxes**: Автоматизовані картки швидкої інформації для кожної сторінки (як у Вікіпедії).
 
----
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27 (2).jpg" width="700" alt="Match Archive" />
+</p>
 
-## Killer Feature: Interactive Esports Map
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27 (3).jpg" width="700" alt="Global Search" />
+</p>
 
-- **Geospatial Discovery**: Натискайте на будь-яку країну на мапі, щоб миттєво отримати список топ-команд, провідних гравців та статистику кіберспортивної активності в цьому регіоні.
-- **Real-time Data**: Всі дані підтягуються безпосередньо з нашої бази даних, забезпечуючи актуальність інформації.
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27 (4).jpg" width="700" alt="Teams" />
+</p>
+
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27 (5).jpg" width="700" alt="Players & Statistics" />
+</p>
+
+<p align="center">
+  <img src="client/src/img/photo_2026-06-24_09-12-27 (6).jpg" width="700" alt="User Profile" />
+</p>
 
 ---
 
@@ -75,7 +109,7 @@
     ```bash
     cp .env.example .env
     ```
-    Відкрийте `.env` та заповніть `PANDASCORE_API_KEY` і `JWT_SECRET` (деталі — у розділі [Змінні середовища](#змінні-середовища-environment-variables)).
+    Відкрийте `.env` та заповніть `PANDASCORE_API_KEY` і `JWT_SECRET`.
 
 3. **Запустіть всі сервіси:**
     ```bash
@@ -91,10 +125,7 @@
 ### Зупинка
 
 ```bash
-# Зупинити сервіси
 docker-compose down
-
-# Зупинити та видалити дані БД
 docker-compose down -v
 ```
 
@@ -103,22 +134,6 @@ docker-compose down -v
 ## База даних (Migrations & Seed)
 
 Міграції та seed-дані запускаються **автоматично** при першому `docker-compose up --build`.
-
-Якщо потрібно запустити вручну (всередині контейнера):
-
-```bash
-# Увійти в контейнер бекенду
-docker exec -it esport_hub_server sh
-
-# Запустити міграції
-npx sequelize-cli db:migrate
-
-# Наповнити базу тестовими даними
-npx sequelize-cli db:seed:all
-
-# Скинути та перезапустити з нуля
-npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all
-```
 
 ### Що є в seed-даних
 
@@ -130,13 +145,9 @@ npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx seq
 | Турніри | 8 | ESL Pro League, IEM Katowice |
 | Матчі | 50 | з реалістичними датами та результатами |
 
-> Seed-дані містять реальні імена та дати для переконливого вигляду під час демо.
-
 ---
 
 ## Змінні середовища (Environment Variables)
-
-Скопіюйте `.env.example` → `.env` та заповніть значення:
 
 | Змінна | Опис |
 | :--- | :--- |
@@ -149,11 +160,6 @@ npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx seq
 | `JWT_SECRET` | Секрет для підпису JWT-токенів (мін. 32 символи) |
 | `PANDASCORE_API_KEY` | API-ключ PandaScore ([отримати тут](https://pandascore.co)) |
 
-**Генерація `JWT_SECRET`:**
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
-
 ---
 
 ## Тестові облікові записи (Test Credentials)
@@ -163,20 +169,13 @@ node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 | Admin | admin@test.com | 123456 |
 | User | user1@test.com | 123456 |
 
-> ⚠️ Ці облікові записи існують лише в локальній dev-базі після запуску seeders.
-> Ніколи не використовуй такі паролі в production.
-
 ---
 
 ## API документація (Swagger)
 
-Інтерактивна документація доступна після запуску:
-
 ```
 http://localhost:5000/api-docs
 ```
-
-Основні групи endpoints:
 
 | Група | Опис |
 | :--- | :--- |
@@ -206,25 +205,20 @@ EsportHub/
 │   │   ├── presentation/    # Controllers, Routes, Middlewares
 │   │   ├── application/     # Services (бізнес-логіка)
 │   │   └── infrastructure/  # Repositories, WebSockets, External APIs
-│   ├── migrations/          # Sequelize міграції (включно з player_transfer)
+│   ├── migrations/          # Sequelize міграції
 │   └── seeders/             # Реалістичні тестові дані для демо
 │
 ├── docker-compose.yml
-├── .env.example             # Шаблон змінних середовища
-└── .env                     # Локальний конфіг (не комітити!)
+├── .env.example
+└── .env
 ```
 
 ---
 
 ## Стандарти коду (Code Quality)
 
-Проєкт використовує ESLint (Airbnb Style Guide) та Prettier:
-
 ```bash
-# Перевірка
 npm run lint
-
-# Автовиправлення
 npm run lint:fix
 ```
 
@@ -233,3 +227,4 @@ npm run lint:fix
 ## Ліцензія
 
 MIT © EsportHub Team
+```
